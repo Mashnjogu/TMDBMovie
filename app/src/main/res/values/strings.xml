@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TMDBMovie</string>
+    <string name="tmdb_base_url">https://api.themoviedb.org/3/movie</string>
 </resources>
