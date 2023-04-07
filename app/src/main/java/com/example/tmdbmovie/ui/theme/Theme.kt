@@ -5,17 +5,30 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = Color.Black,
+    primaryVariant = Color.Black,
+    secondary = SoftYellow,
+    error = RedErrorLight,
+    onPrimary = Color.White,
+    background = BlackBlue,
+    onBackground = Color.White,
+    surface = Color.DarkGray
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = Color.White,
+    primaryVariant = Color.LightGray,
+    secondary = SoftYellow,
+    onPrimary = BlackBlue,
+    error = RedErrorDark,
+    onError = RedErrorLight,
+    background = Color.White,
+    onSecondary = SoftYellow,
+    onBackground = BlackBlue,
+    surface = LightGray
 
     /* Other default colors to override
     background = Color.White,
@@ -37,7 +50,7 @@ fun TMDBMovieTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = MontseratTypography,
         shapes = Shapes,
         content = content
     )
