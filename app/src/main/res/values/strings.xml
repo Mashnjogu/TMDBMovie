@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">TMDBMovie</string>
     <string name="tmdb_base_url">https://api.themoviedb.org/3/movie</string>
+    <string name="appbar_name">MovieOnline</string>
+
+    <!-- Common -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="generic_error">Something wrong happened. Please try again.</string>
+    <string name="email_error">Please insert a valid email.</string>
+    <string name="cancel">Cancel</string>
+    <string name="try_again">Try again</string>
+    <string name="save">Save</string>
+
 </resources>

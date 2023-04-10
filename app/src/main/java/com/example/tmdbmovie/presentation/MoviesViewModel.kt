@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tmdbmovie.data.remote.MovieDataDTO
 import com.example.tmdbmovie.data.remote.MoviesDTO
 import com.example.tmdbmovie.domain.repository.MovieRepository
 import com.example.tmdbmovie.domain.util.TMDBmovieState
@@ -19,61 +20,61 @@ class MoviesViewModel @Inject constructor(
     private val repository: MovieRepository
 ): ViewModel(){
 
-    private val _uiStatePopular = MutableStateFlow(listOf<MoviesDTO>())
-    private val _uiStateTopRated = MutableStateFlow(listOf<MoviesDTO>())
-    private val _uiStateLatest = MutableStateFlow(listOf<MoviesDTO>())
+    private val _uiStatePopular = MutableStateFlow(listOf<MovieDataDTO>())
+    private val _uiStateTopRated = MutableStateFlow(listOf<MovieDataDTO>())
+    private val _uiStateLatest = MutableStateFlow(listOf<MovieDataDTO>())
 
-    val uiStatePopular: StateFlow<List<MoviesDTO>> = _uiStatePopular.asStateFlow()
-    val uiStateTopRated: StateFlow<List<MoviesDTO>> = _uiStatePopular.asStateFlow()
-    val uiStateLatest: StateFlow<List<MoviesDTO>> = _uiStatePopular.asStateFlow()
+    val uiStatePopular: StateFlow<List<MovieDataDTO>> = _uiStatePopular.asStateFlow()
+    val uiStateTopRated: StateFlow<List<MovieDataDTO>> = _uiStatePopular.asStateFlow()
+    val uiStateLatest: StateFlow<List<MovieDataDTO>> = _uiStatePopular.asStateFlow()
 
     init {
-//        getPopularMovies()
+        getPopularMovies()
 //        getTopRated()
 //        getLatest()
     }
 
-//    fun getPopularMovies(){
-//        viewModelScope.launch{
-//            repository.getPopularMovies()
-//                .flowOn(Dispatchers.IO)
-//                .catch {
-//                    it.printStackTrace()
-//                }
-//                .collect{
-//                    val popularMovies = it.results as List<MoviesDTO>
-//                    _uiStatePopular.emit(popularMovies)
-//                }
-//        }
-//    }
-//
-//    fun getTopRated(){
-//        viewModelScope.launch {
-//
-//            repository.getTopRatedMovies()
-//                .flowOn(Dispatchers.IO)
-//                .catch {
-//                    it.printStackTrace()
-//                }
-//                .collect{
-//                    val topRated = it.results as List<MoviesDTO>
-//                    _uiStateTopRated.emit(topRated)
-//                }
-//        }
-//    }
-//
-//    fun getLatest(){
-//        viewModelScope.launch {
-//
-//            repository.getLatestMovies()
-//                .flowOn(Dispatchers.IO)
-//                .catch {
-//                    it.printStackTrace()
-//                }
-//                .collect{
-//                    val latestMovies = it.results as List<MoviesDTO>
-//                    _uiStateLatest.emit(latestMovies)
-//                }
-//        }
-//    }
+    fun getPopularMovies(){
+        viewModelScope.launch{
+            repository.getPopularMovies()
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    it.printStackTrace()
+                }
+                .collect{
+                    val popularMovies = it.results
+                    _uiStatePopular.emit(listOf(popularMovies))
+                }
+        }
+    }
+
+    fun getTopRated(){
+        viewModelScope.launch {
+
+            repository.getTopRatedMovies()
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    it.printStackTrace()
+                }
+                .collect{
+                    val topRated = it.results
+                    _uiStateTopRated.emit(listOf(topRated))
+                }
+        }
+    }
+
+    fun getLatest(){
+        viewModelScope.launch {
+
+            repository.getLatestMovies()
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    it.printStackTrace()
+                }
+                .collect{
+                    val latestMovies = it.results
+                    _uiStateLatest.emit(listOf(latestMovies))
+                }
+        }
+    }
 }
