@@ -12,5 +12,6 @@
     <string name="cancel">Cancel</string>
     <string name="try_again">Try again</string>
     <string name="save">Save</string>
+    <string name="filmPhoto">FilmPhoto</string>
 
 </resources>

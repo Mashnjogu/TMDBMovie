@@ -1,5 +1,7 @@
 package com.example.tmdbmovie.data.remote
 
+import com.example.tmdbmovie.data.model.movies.MoviesDTO
+import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import retrofit2.http.GET
 
 interface MovieApiService {
@@ -10,6 +12,28 @@ interface MovieApiService {
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(): MoviesDTO
 
-    @GET("movie/latest")
-    suspend fun getLatestMovies(): MoviesDTO
+    @GET("movie/now_playing")
+    suspend fun getNowPlayingMovies(): MoviesDTO
+
+    @GET("movie/upcoming")
+    suspend fun getUpcomingMovies(): MoviesDTO
+
+    //TV Shows
+    @GET("tv/popular")
+    suspend fun getPopularTVShows(): TvShowDTO
+
+    @GET("tv/top_rated")
+    suspend fun getTopRatedTVShows(): TvShowDTO
+
+    @GET("tv/on_the_air")
+    suspend fun getOnAirShows(): TvShowDTO
+
+    @GET( "trending/movie/week")
+    suspend fun getTrendingMovies(): MoviesDTO
+
+    @GET( "trending/tv/week")
+    suspend fun getTrendingShows(): TvShowDTO
+
+
+
 }
