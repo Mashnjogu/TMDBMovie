@@ -18,12 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.tmdbmovie.composables.*
-import com.example.tmdbmovie.presentation.TrendingScreen.TrendingScreen
+import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.ui.theme.SoftYellow
 
 
 @Composable
-fun HomeScreen(navController: NavHostController){
+fun HomeScreen(
+    navController: NavHostController,
+    onNavigateToMovieDetails: (MovieDataDTO) -> Unit
+){
 
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberScrollState()
@@ -52,7 +55,7 @@ fun HomeScreen(navController: NavHostController){
                  )
         },
         content = { paddingValues ->
-            Home(paddingValues = paddingValues, scrollState = scrollState)
+            Home(paddingValues = paddingValues, scrollState = scrollState, onNavigateToMovieDetails = onNavigateToMovieDetails)
         },
         bottomBar = {
             BottomBar(navController = navController)
@@ -64,7 +67,8 @@ fun HomeScreen(navController: NavHostController){
 fun Home(
     paddingValues: PaddingValues,
     scrollState: ScrollState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToMovieDetails: (MovieDataDTO) -> Unit
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -87,6 +91,7 @@ fun Home(
     val nowPlayingMovieState =  moviesViewModel.uiStateNowPlaying.collectAsState()
     val upcomingMovieState =  moviesViewModel.uiStateUpcoming.collectAsState()
     val trendingMoviesState = moviesViewModel.uiStateTrending.collectAsState()
+    val movieGenresState = moviesViewModel.uiStateGenres.collectAsState()
 
     //extracting from state
     val popularMovies = popularMoviesState.value
@@ -94,6 +99,7 @@ fun Home(
     val nowPlayingMovies = nowPlayingMovieState.value
     val upComingMovies = upcomingMovieState.value
     val trendingMovies = trendingMoviesState.value
+    val movieGenres = movieGenresState.value
 
     //*************TVSHOWS***************
     //collecting states
@@ -111,8 +117,10 @@ fun Home(
     val trendingFilmsSize = (trendingMovies?.size ?: 0) + (trendingShows?.size ?: 0)
 
 
-    println("The trending movies are: ${trendingMovies?.size} yes, yes")
-    println("The trending shows are: ${trendingShows?.size} no, yes")
+//    println("The list of movie genres are : ${movieGenres?.size}")
+    println("The popular movies are: ${popularMovies}")
+    println("The popular shows are: ${popularShows}")
+    println("The top rated movies are: ${topRatedMovies?.size}")
 
     Column (
         modifier = modifier
@@ -128,7 +136,11 @@ fun Home(
         Text(text = "Trending:", style = MaterialTheme.typography.h3)
         Spacer(modifier = Modifier.height(12.dp))
         if (trendingMovies != null) {
-            EmptyCard2(trendingMovies = trendingMovies)
+            if (movieGenres != null) {
+                EmptyCard2(trendingMovies = trendingMovies, allGenres = movieGenres)
+            }
+        }else{
+            EmptyCard()
         }
         Spacer(modifier = Modifier.height(12.dp))
         Spacer(modifier = Modifier.height(12.dp))
@@ -172,7 +184,7 @@ fun Home(
         when(tabIndexMovie){
             0 -> {
                 if (popularMovies != null) {
-                    TabCardMovieContent( images = popularMovies)
+                    TabCardMovieContent( images = popularMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails)
                 }else{
                     EmptyCard()
                 }
@@ -181,7 +193,7 @@ fun Home(
             1 -> {
 
                 if (topRatedMovies != null) {
-                    TabCardMovieContent(images = topRatedMovies)
+                    TabCardMovieContent(images = topRatedMovies,onNavigateToMovieDeatils = onNavigateToMovieDetails)
                 }else{
                     EmptyCard()
                 }
@@ -190,7 +202,7 @@ fun Home(
 
             2 -> {
                 if (nowPlayingMovies != null) {
-                    TabCardMovieContent(images = nowPlayingMovies)
+                    TabCardMovieContent(images = nowPlayingMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails)
                 }else{
                     EmptyCard()
                 }
@@ -198,7 +210,7 @@ fun Home(
 
             3 -> {
                 if (upComingMovies != null) {
-                    TabCardMovieContent(images = upComingMovies)
+                    TabCardMovieContent(images = upComingMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails)
                 }else{
                     EmptyCard()
                 }

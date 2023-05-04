@@ -1,5 +1,6 @@
 package com.example.tmdbmovie.data.remote
 
+import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import retrofit2.http.GET
@@ -34,6 +35,7 @@ interface MovieApiService {
     @GET( "trending/tv/week")
     suspend fun getTrendingShows(): TvShowDTO
 
-
+    @GET("genre/movie/list")
+    suspend fun getMovieGenres(): MovieGenre
 
 }

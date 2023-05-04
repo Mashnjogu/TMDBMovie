@@ -2,6 +2,7 @@ package com.example.tmdbmovie.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tmdbmovie.data.model.genre.Genre
 import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,12 +21,14 @@ class MoviesViewModel @Inject constructor(
     private val _uiStateNowPlaying = MutableStateFlow<List<MovieDataDTO>?>(null)
     private val _uiStateUpcoming = MutableStateFlow<List<MovieDataDTO>?>(null)
     private val _uiStateTrending = MutableStateFlow<List<MovieDataDTO>?>(null)
+    private val _uiStateGenres = MutableStateFlow<List<Genre>?>(null)
 
     val uiStatePopular: StateFlow<List<MovieDataDTO>?> = _uiStatePopular.asStateFlow()
     val uiStateTopRated: StateFlow<List<MovieDataDTO>?> = _uiStateTopRated.asStateFlow()
     val uiStateNowPlaying: StateFlow<List<MovieDataDTO>?> = _uiStateNowPlaying.asStateFlow()
     val uiStateUpcoming: StateFlow<List<MovieDataDTO>?> = _uiStateNowPlaying.asStateFlow()
     val uiStateTrending: StateFlow<List<MovieDataDTO>?> = _uiStateTrending.asStateFlow()
+    val uiStateGenres: StateFlow<List<Genre>?> = _uiStateGenres.asStateFlow()
 
 
     init {
@@ -34,6 +37,7 @@ class MoviesViewModel @Inject constructor(
         getNowPlayingMovies()
         getUpcoming()
         getTrendingMovies()
+        getMovieGenres()
     }
 
     private fun getPopularMovies(){
@@ -109,6 +113,18 @@ class MoviesViewModel @Inject constructor(
                 .collect{
                     val trendingMovies = it.results
                     _uiStateTrending.emit(trendingMovies)
+                }
+        }
+    }
+
+
+    private fun getMovieGenres(){
+        viewModelScope.launch {
+            repository.getMovieGenres()
+                .flowOn(Dispatchers.IO)
+                .collect{
+                    val movieGenres = it.genres
+                    _uiStateGenres.emit(movieGenres)
                 }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.tmdbmovie.data.repository
 
+import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
@@ -42,6 +43,10 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getTrendingShows(): Flow<TvShowDTO> {
         return moviesApiHelper.getTrendingShows()
+    }
+
+    override suspend fun getMovieGenres(): Flow<MovieGenre> {
+        return moviesApiHelper.getMovieGenres()
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.tmdbmovie.composables
 
-
-
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,14 +20,16 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.R
+import com.example.tmdbmovie.data.model.genre.Genre
 import com.example.tmdbmovie.data.model.tvshows.TvShowDataDTO
 import com.example.tmdbmovie.domain.util.POSTERPATHURL
-
+import com.example.tmdbmovie.extras.TrendingMediaData
 
 @Composable
 fun TabCardMovieContent(
     modifier: Modifier = Modifier,
-    images: List<MovieDataDTO>
+    images: List<MovieDataDTO>,
+    onNavigateToMovieDeatils: (MovieDataDTO) -> Unit
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -41,28 +42,37 @@ fun TabCardMovieContent(
 
     ) {
 
-        FilmListImages(films = images)
+        FilmListImages(films = images, onNavigateToMovieDeatils = onNavigateToMovieDeatils)
     }
 }
 
 @Composable
-fun FilmListImages(films: List<MovieDataDTO>, modifier: Modifier = Modifier){
+fun FilmListImages(
+    films: List<MovieDataDTO>,
+    modifier: Modifier = Modifier,
+    onNavigateToMovieDeatils: (MovieDataDTO) -> Unit
+){
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ){
         items(items = films, key = {film -> film.id}){ film ->
-            FilmImageCard(film = film)
+            FilmImageCard(film = film, onNavigateToMovieDeatils = {onNavigateToMovieDeatils(film)})
         }
     }
 }
 
 @Composable
-fun FilmImageCard(film: MovieDataDTO, modifier: Modifier = Modifier){
+fun FilmImageCard(
+    film: MovieDataDTO,
+    modifier: Modifier = Modifier,
+    onNavigateToMovieDeatils: () -> Unit
+){
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .aspectRatio(1f),
+            .aspectRatio(1f)
+            .clickable(onClick = onNavigateToMovieDeatils),
         elevation = 8.dp,
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -87,7 +97,7 @@ fun EmptyCard(modifier: Modifier = Modifier){
         modifier =
         modifier
             .fillMaxWidth()
-            .height(screenHeight * 0.45f),
+            .height(screenHeight * 0.35f),
         backgroundColor = Color.LightGray
     ) {
 
@@ -103,18 +113,17 @@ fun EmptyCard(modifier: Modifier = Modifier){
 fun EmptyCard2(
     modifier: Modifier = Modifier,
     trendingMovies: List<MovieDataDTO>,
+    allGenres: List<Genre>
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val list1 = listOf<String>("Dennis", "Pat", "Karanja", "Kababa", "Amos")
     Card(
         modifier =
         modifier
             .fillMaxWidth()
             .height(screenHeight * 0.45f),
-
     ) {
-        ScrollEffectChange(trendingMovies = trendingMovies)
+        ScrollEffectChange(trendingMovies = trendingMovies, allGenres = allGenres)
     }
 }
 

@@ -5,6 +5,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.load
+import com.example.tmdbmovie.data.model.genre.Genre
 import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDataDTO
 import com.example.tmdbmovie.domain.util.BACKDROPPATHURL
@@ -38,6 +41,7 @@ import kotlin.math.absoluteValue
 fun ScrollEffectChange(
     modifier: Modifier = Modifier,
     trendingMovies: List<MovieDataDTO>,
+    allGenres: List<Genre>
 ){
 
     val pagerState = rememberPagerState(
@@ -68,6 +72,7 @@ fun ScrollEffectChange(
         val trendingImage = "${BACKDROPPATHURL}${trendingMovie.backdrop_path}"
         val trendingMovieName = trendingMovie.title
         val trendingMovieOverview = trendingMovie.overview
+        val genres = trendingMovie.genre_ids
 
         Card(
             modifier = modifier
@@ -119,16 +124,30 @@ fun ScrollEffectChange(
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(text = trendingMovieOverview, style = MaterialTheme.typography.h5, color = Color.White)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Row (modifier = modifier.fillMaxWidth()){
-                        Text(text = "Genre Id", style = MaterialTheme.typography.h5, color = Color.White)
-                        Text(text = "Rating")
-                    }
+//                    Row (
+//                        modifier = modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ){
+//                        Text(text = "Genre Id", style = MaterialTheme.typography.h5, color = Color.White)
+//                        LazyRow{
+//                            items(trendingMovies){
+//                               Text(text = getGenreNames(genres, allGenres).joinToString())
+//                            }
+//                        }
+//                    }
                 }
             }
-
-
-
         }
+    }
+}
+
+
+
+fun getGenreNames(genreIds: List<Int>, genres: List<Genre>): List<String>{
+    return genreIds.map {id ->
+        genres.find {
+            it.id == id
+        }?.name ?: ""
     }
 }
 

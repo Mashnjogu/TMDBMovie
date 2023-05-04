@@ -25,10 +25,6 @@ sealed class BottomNavigationScreens(
         route = "Search",
         icon = Icons.Default.Search
     )
-    object Trending: BottomNavigationScreens(
-        route = "Trending",
-        icon = Icons.Default.Star
-    )
     object Favorite: BottomNavigationScreens(
         route = "Favorite",
         icon = Icons.Default.Favorite

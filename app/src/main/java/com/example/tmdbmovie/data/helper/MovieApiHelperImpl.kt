@@ -1,11 +1,8 @@
 package com.example.tmdbmovie.data.helper
 
 
-import com.example.tmdbmovie.data.model.movies.MoviesDTO
-import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.data.remote.MovieApiService
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
@@ -45,6 +42,14 @@ class MovieApiHelperImpl(private val apiService: MovieApiService): MovieApiHelpe
     override suspend fun getTrendingMovies() = flow {
         try{
             emit(apiService.getTrendingMovies())
+        }catch(e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun getMovieGenres() = flow{
+        try{
+            emit(apiService.getMovieGenres())
         }catch(e: Exception){
             e.printStackTrace()
         }

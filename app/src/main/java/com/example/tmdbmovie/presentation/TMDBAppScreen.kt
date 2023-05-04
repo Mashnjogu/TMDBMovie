@@ -14,13 +14,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.tmdbmovie.composables.BottomBar
 import com.example.tmdbmovie.extras.BottomNavigationScreens
 import com.example.tmdbmovie.extras.Routes
 import com.example.tmdbmovie.extras.TMDBAppState
 import com.example.tmdbmovie.presentation.FavoriteScreen.FavoriteScreen
 import com.example.tmdbmovie.presentation.SearchScreen.SearchScreen
-import com.example.tmdbmovie.presentation.TrendingScreen.TrendingScreen
+import com.example.tmdbmovie.presentation.moviedetails.MovieDetailScreen
 import com.example.tmdbmovie.utils.snackbar.SnackBarManager
 import kotlinx.coroutines.CoroutineScope
 
@@ -71,20 +70,26 @@ fun resources(): Resources{
 
 fun NavGraphBuilder.TMDBGraph(appState: TMDBAppState, navController: NavHostController){
     composable(Routes.HomeScreen.route){
-        HomeScreen(navController = navController)
+        HomeScreen(navController = navController, onNavigateToMovieDetails = {
+            navController.navigate(Routes.MovieDetail.route)
+        })
     }
     composable(BottomNavigationScreens.Home.route){
-        HomeScreen(navController = navController)
+        HomeScreen(navController = navController, onNavigateToMovieDetails = {
+            navController.navigate(Routes.MovieDetail.route)
+        })
     }
     composable(BottomNavigationScreens.Search.route){
         SearchScreen()
     }
-    composable(BottomNavigationScreens.Trending.route){
-        TrendingScreen()
-    }
     composable(BottomNavigationScreens.Favorite.route){
         FavoriteScreen()
     }
+    composable(Routes.MovieDetail.route){
+        MovieDetailScreen()
+    }
+
 }
+
 
 

@@ -1,5 +1,6 @@
 package com.example.tmdbmovie.domain.repository
 
+import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import kotlinx.coroutines.flow.Flow
@@ -22,4 +23,6 @@ interface MovieRepository {
     suspend fun getTrendingMovies(): Flow<MoviesDTO>
 
     suspend fun getTrendingShows(): Flow<TvShowDTO>
+
+    suspend fun getMovieGenres(): Flow<MovieGenre>
 }

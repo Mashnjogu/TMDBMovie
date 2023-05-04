@@ -1,5 +1,6 @@
 package com.example.tmdbmovie.domain.helper
 
+import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,8 @@ interface MovieApiHelper {
     suspend fun getUpcomingMovies(): Flow<MoviesDTO>
 
     suspend fun getTrendingMovies(): Flow<MoviesDTO>
+
+    suspend fun getMovieGenres(): Flow<MovieGenre>
 
 
     //TV Shows
