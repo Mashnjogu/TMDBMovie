@@ -25,7 +25,7 @@ import com.example.tmdbmovie.ui.theme.SoftYellow
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    onNavigateToMovieDetails: (MovieDataDTO) -> Unit
+    onNavigateToMovieDetails: (Int) -> Unit
 ){
 
     val scaffoldState = rememberScaffoldState()
@@ -68,7 +68,7 @@ fun Home(
     paddingValues: PaddingValues,
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
-    onNavigateToMovieDetails: (MovieDataDTO) -> Unit
+    onNavigateToMovieDetails: (Int) -> Unit
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp

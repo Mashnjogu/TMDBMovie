@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.tmdbmovie.R
+import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.domain.util.dummyImage
+import com.example.tmdbmovie.extras.Routes
 
 private val headerHeight = 420.dp
 private val toolbarHeight = 56.dp
@@ -46,7 +48,10 @@ private const val titleFontScaleStart = 1f
 private const val titleFontScaleEnd = 0.66f
 
 @Composable
-fun MovieDetailScreen(modifier: Modifier = Modifier) {
+fun MovieDetailScreen(
+    modifier: Modifier = Modifier,
+    movieId: Int
+) {
 
     val scroll: ScrollState = rememberScrollState(0)
     val headerHeightPx = with(LocalDensity.current){
@@ -57,7 +62,7 @@ fun MovieDetailScreen(modifier: Modifier = Modifier) {
     }
     Box(modifier = modifier.fillMaxSize()){
         Header(headerHeightPx = headerHeightPx, scroll = scroll)
-        Body(scrollState = scroll)
+        Body(scrollState = scroll, movieId = movieId)
         Toolbar(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx)
         Title(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx)
     }
@@ -114,12 +119,13 @@ private fun Header(modifier: Modifier = Modifier, headerHeightPx: Float, scroll:
 }
 
 @Composable
-fun Body(modifier: Modifier = Modifier, scrollState: ScrollState){
+fun Body(modifier: Modifier = Modifier, scrollState: ScrollState, movieId: Int){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.verticalScroll(scrollState)
     ) {
         Spacer(modifier = modifier.height(headerHeight))
+        Text(text = "The movie Id is: ${movieId}")
         repeat(5) {
             Text(
                 text = "The “Body” composable is as simple as a Column with some Text. But remember, this composable is under the scope of a Box which fills the entire screen (see “CollapsingToolbar” composable above). It means that the “Body” composable overlaps the header while we actually want it to be placed beneath it.\n" +
@@ -206,7 +212,7 @@ private fun Title(
         modifier = modifier
             .graphicsLayer {
                 val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
-                val collapseFraction: Float = (scroll.value/ collapseRange).coerceIn(0f, 1f)
+                val collapseFraction: Float = (scroll.value / collapseRange).coerceIn(0f, 1f)
 
                 val scaleXY = lerp(
                     titleFontScaleStart.dp,
@@ -219,7 +225,7 @@ private fun Title(
 //                Let’s first calculate P0P1 lerp
                 val titleYFirstInterpolatedPoint = lerp(
                     headerHeight - titleHeightDp - paddingMedium,
-                    headerHeight/2,
+                    headerHeight / 2,
                     collapseFraction
                 )
 
@@ -232,7 +238,7 @@ private fun Title(
 //                Then let’s calculate P1P2 lerp
                 val titleYSecondInterpolatedPoint = lerp(
                     (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
-                    toolbarHeight/2 - titleHeightDp/2,
+                    toolbarHeight / 2 - titleHeightDp / 2,
                     collapseFraction
                 )
 
@@ -241,7 +247,7 @@ private fun Title(
                     titlePaddingEnd,
                     collapseFraction
                 )
-                 /* let’s calculate the quadratic Bézier curve Z based
+                /* let’s calculate the quadratic Bézier curve Z based
                 of these two nested “lerps” on the Y axis:
                 */
 

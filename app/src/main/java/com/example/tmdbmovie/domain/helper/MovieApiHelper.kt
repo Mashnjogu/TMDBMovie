@@ -20,6 +20,8 @@ interface MovieApiHelper {
 
     suspend fun getMovieGenres(): Flow<MovieGenre>
 
+    suspend fun getMovieDetails(): Resource<>
+
 
     //TV Shows
     suspend fun getPopularTVShows(): Flow<TvShowDTO>

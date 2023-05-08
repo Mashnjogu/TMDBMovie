@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,15 +20,13 @@ import coil.request.ImageRequest
 import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.R
 import com.example.tmdbmovie.data.model.genre.Genre
-import com.example.tmdbmovie.data.model.tvshows.TvShowDataDTO
 import com.example.tmdbmovie.domain.util.POSTERPATHURL
-import com.example.tmdbmovie.extras.TrendingMediaData
 
 @Composable
 fun TabCardMovieContent(
     modifier: Modifier = Modifier,
     images: List<MovieDataDTO>,
-    onNavigateToMovieDeatils: (MovieDataDTO) -> Unit
+    onNavigateToMovieDeatils: (Int) -> Unit
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -50,13 +47,13 @@ fun TabCardMovieContent(
 fun FilmListImages(
     films: List<MovieDataDTO>,
     modifier: Modifier = Modifier,
-    onNavigateToMovieDeatils: (MovieDataDTO) -> Unit
+    onNavigateToMovieDeatils: (Int) -> Unit
 ){
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ){
         items(items = films, key = {film -> film.id}){ film ->
-            FilmImageCard(film = film, onNavigateToMovieDeatils = {onNavigateToMovieDeatils(film)})
+            FilmImageCard(film = film, onNavigateToMovieDetails = {onNavigateToMovieDeatils(film.id)})
         }
     }
 }
@@ -65,14 +62,14 @@ fun FilmListImages(
 fun FilmImageCard(
     film: MovieDataDTO,
     modifier: Modifier = Modifier,
-    onNavigateToMovieDeatils: () -> Unit
+    onNavigateToMovieDetails: () -> Unit
 ){
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
             .aspectRatio(1f)
-            .clickable(onClick = onNavigateToMovieDeatils),
+            .clickable(onClick = onNavigateToMovieDetails),
         elevation = 8.dp,
         shape = RoundedCornerShape(10.dp)
     ) {

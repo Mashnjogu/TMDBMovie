@@ -69,9 +69,10 @@ fun resources(): Resources{
 }
 
 fun NavGraphBuilder.TMDBGraph(appState: TMDBAppState, navController: NavHostController){
+
     composable(Routes.HomeScreen.route){
-        HomeScreen(navController = navController, onNavigateToMovieDetails = {
-            navController.navigate(Routes.MovieDetail.route)
+        HomeScreen(navController = navController, onNavigateToMovieDetails = { movieId ->
+            navController.navigate("${Routes.MovieDetail.route}/$movieId")
         })
     }
     composable(BottomNavigationScreens.Home.route){
@@ -85,8 +86,10 @@ fun NavGraphBuilder.TMDBGraph(appState: TMDBAppState, navController: NavHostCont
     composable(BottomNavigationScreens.Favorite.route){
         FavoriteScreen()
     }
-    composable(Routes.MovieDetail.route){
-        MovieDetailScreen()
+    composable("${Routes.MovieDetail.route}/{${Routes.MovieDetail.Args.movieId}}"){
+        val movieId = it.arguments?.getString(Routes.MovieDetail.Args.movieId)?.toInt()
+            ?: throw IllegalStateException("Missing movieId argument")
+        MovieDetailScreen(movieId = movieId)
     }
 
 }

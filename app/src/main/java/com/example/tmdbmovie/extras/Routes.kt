@@ -9,7 +9,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Routes(val route: String){
     object HomeScreen: Routes("Homescreen")
-    object MovieDetail: Routes("MovieDetail")
+    object MovieDetail: Routes("MovieDetail/${Args.movieId}"){
+        object Args{
+            const val movieId = "movieId"
+        }
+    }
     object ShowDetail: Routes("ShowDetail")
 }
 
