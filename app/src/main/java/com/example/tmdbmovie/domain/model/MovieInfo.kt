@@ -16,7 +16,7 @@ data class MovieInfo(
     val vote_count: Int,
     val credits: Credits,
     val videos: VideoList,
-    val recommendations: MovieList,
+    val similar: MovieList,
     val runtime: Int?,
 ){
     fun trimGenreList() = genres.joinToString { it.name }
@@ -35,7 +35,7 @@ data class MovieInfo(
             vote_count = 0,
             credits = Credits.empty,
             videos = VideoList.empty,
-            recommendations = MovieList.empty,
+            similar = MovieList.empty,
             runtime = null
         )
     }

@@ -7,3 +7,12 @@ data class MovieGenre(
     @SerializedName("genres")
     val genres: List<Genre>
 )
+
+data class MovieGenreDTO(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String
+)
+
+

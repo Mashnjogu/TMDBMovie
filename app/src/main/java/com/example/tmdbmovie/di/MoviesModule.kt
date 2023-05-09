@@ -1,9 +1,12 @@
 package com.example.tmdbmovie.di
 
+import android.content.Context
 import com.example.tmdbmovie.BuildConfig
 import com.example.tmdbmovie.data.helper.MovieApiHelperImpl
 import com.example.tmdbmovie.data.remote.MovieApiService
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
+import com.example.tmdbmovie.extras.ISafeApiCall
+import com.example.tmdbmovie.extras.SafeApiCall
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,13 +44,19 @@ object MoviesModule{
         .build()
 
     @Provides
+    fun provideSafeApiCall(context: Context): ISafeApiCall {
+        return SafeApiCall(context)
+    }
+
+    @Provides
     fun provideMoviesService(retrofit: Retrofit): MovieApiService {
         return retrofit.create(MovieApiService::class.java)
     }
 
     @Provides
-    fun provideMoviesApiHelper(apiService: MovieApiService): MovieApiHelper{
-        return MovieApiHelperImpl(apiService)
+    fun provideMoviesApiHelper(apiService: MovieApiService, safeApiCall: SafeApiCall): MovieApiHelper{
+        return MovieApiHelperImpl(apiService, safeApiCall)
     }
+
 
 }

@@ -3,6 +3,8 @@ package com.example.tmdbmovie.domain.helper
 import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
+import com.example.tmdbmovie.domain.model.MovieInfo
+import com.example.tmdbmovie.extras.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface MovieApiHelper {
@@ -20,7 +22,7 @@ interface MovieApiHelper {
 
     suspend fun getMovieGenres(): Flow<MovieGenre>
 
-    suspend fun getMovieDetails(): Resource<>
+    suspend fun getMovieDetails(movieId: Int): Resource<MovieInfo>
 
 
     //TV Shows

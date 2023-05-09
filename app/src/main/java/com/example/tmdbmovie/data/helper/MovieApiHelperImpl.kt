@@ -1,12 +1,20 @@
 package com.example.tmdbmovie.data.helper
 
 
+import com.example.tmdbmovie.data.mappers.toMovieDetail
 import com.example.tmdbmovie.data.remote.MovieApiService
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
+import com.example.tmdbmovie.domain.model.MovieInfo
+import com.example.tmdbmovie.extras.Resource
+import com.example.tmdbmovie.extras.SafeApiCall
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 
-class MovieApiHelperImpl(private val apiService: MovieApiService): MovieApiHelper{
+class MovieApiHelperImpl @Inject constructor(
+    private val apiService: MovieApiService,
+    private val safeApiCall: SafeApiCall
+    ): MovieApiHelper{
     override suspend fun getPopularMovies() = flow {
         try {
             emit(apiService.getPopularMovies())
@@ -53,6 +61,10 @@ class MovieApiHelperImpl(private val apiService: MovieApiService): MovieApiHelpe
         }catch(e: Exception){
             e.printStackTrace()
         }
+    }
+
+    override suspend fun getMovieDetails(movieId: Int): Resource<MovieInfo> = safeApiCall.execute{
+        apiService.getMovieDetails(movieId).toMovieDetail()
     }
 
     override suspend fun getPopularTVShows() = flow {

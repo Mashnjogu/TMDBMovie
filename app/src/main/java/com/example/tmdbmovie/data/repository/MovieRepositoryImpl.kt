@@ -4,7 +4,9 @@ import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
+import com.example.tmdbmovie.domain.model.MovieInfo
 import com.example.tmdbmovie.domain.repository.MovieRepository
+import com.example.tmdbmovie.extras.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -47,6 +49,10 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieGenres(): Flow<MovieGenre> {
         return moviesApiHelper.getMovieGenres()
+    }
+
+    override suspend fun getMovieDetails(movieId: Int): Resource<MovieInfo> {
+        return moviesApiHelper.getMovieDetails(movieId)
     }
 
 }
