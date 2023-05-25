@@ -2,6 +2,7 @@ package com.example.tmdbmovie.di
 
 import android.content.Context
 import com.example.tmdbmovie.BuildConfig
+import com.example.tmdbmovie.MovieApplication
 import com.example.tmdbmovie.data.helper.MovieApiHelperImpl
 import com.example.tmdbmovie.data.remote.MovieApiService
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
@@ -10,6 +11,7 @@ import com.example.tmdbmovie.extras.SafeApiCall
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
@@ -43,20 +45,26 @@ object MoviesModule{
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    @Provides
-    fun provideSafeApiCall(context: Context): ISafeApiCall {
-        return SafeApiCall(context)
-    }
+//    @Provides
+//    fun provideSafeApiCall(context: Context): ISafeApiCall {
+//        return SafeApiCall(context)
+//    }
 
     @Provides
     fun provideMoviesService(retrofit: Retrofit): MovieApiService {
         return retrofit.create(MovieApiService::class.java)
     }
 
-    @Provides
-    fun provideMoviesApiHelper(apiService: MovieApiService, safeApiCall: SafeApiCall): MovieApiHelper{
-        return MovieApiHelperImpl(apiService, safeApiCall)
-    }
+//    @Provides
+//    fun provideMoviesApiHelper(apiService: MovieApiService, safeApiCall: SafeApiCall): MovieApiHelper{
+//        return MovieApiHelperImpl(apiService, safeApiCall)
+//    }
 
+
+
+    @Provides
+    fun provideMoviesApiHelper(apiService: MovieApiService, @ApplicationContext context: Context): MovieApiHelper{
+        return MovieApiHelperImpl(context,apiService)
+    }
 
 }

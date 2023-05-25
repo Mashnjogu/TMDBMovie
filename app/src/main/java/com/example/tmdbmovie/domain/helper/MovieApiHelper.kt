@@ -1,6 +1,7 @@
 package com.example.tmdbmovie.domain.helper
 
 import com.example.tmdbmovie.data.model.genre.MovieGenre
+import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.domain.model.MovieInfo
@@ -22,7 +23,7 @@ interface MovieApiHelper {
 
     suspend fun getMovieGenres(): Flow<MovieGenre>
 
-    suspend fun getMovieDetails(movieId: Int): Resource<MovieInfo>
+    suspend fun getMovieDetails(movieId: Int): Flow<MovieDetailDTO>
 
 
     //TV Shows

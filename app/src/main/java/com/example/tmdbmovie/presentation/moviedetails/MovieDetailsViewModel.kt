@@ -1,51 +1,61 @@
 package com.example.tmdbmovie.presentation.moviedetails
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.tmdbmovie.domain.model.MovieInfo
-import com.example.tmdbmovie.domain.usecase.GetDetails
-import com.example.tmdbmovie.extras.MediaType
-import com.example.tmdbmovie.extras.Resource
-import com.example.tmdbmovie.extras.UIState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.*
+import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
+import com.example.tmdbmovie.domain.repository.MovieRepository
+import com.example.tmdbmovie.extras.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
+@HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
-    private val getDetails: GetDetails
+    savedStateHandle: SavedStateHandle,
+    private val repository: MovieRepository
 ): ViewModel(){
 
-    protected var id by Delegates.notNull<Int>()
+    private val movieId: Int = checkNotNull(savedStateHandle[MOVIE_DETAIL_ID_KEY])
 
-    private val _uiState = MutableStateFlow(UIState.loadingState())
-    val uiState get() = _uiState.asStateFlow()
+    private val _movieDetailsUiState = MutableStateFlow<MovieDetailsUiState>(MovieDetailsUiState.Loading)
+    val movieDetailsUiState get() = _movieDetailsUiState.asStateFlow()
 
-    private val _details = MutableStateFlow(MovieInfo.empty)
-    val details get() = _details.asStateFlow()
+    private val _movieDetail = MutableStateFlow<MovieDetailDTO?>(null)
+    val movieDetail: StateFlow<MovieDetailDTO?> = _movieDetail.asStateFlow()
 
-    fun setId(newId: Int){
-        id = newId
+
+    init {
+       fetchMovieDetails()
+        getMoviezz()
     }
 
-    private fun fetchMovieDetails(){
+    private fun getMoviezz(){
         viewModelScope.launch {
-            getDetails(MediaType.MOVIE, id).collect{
-                when(it){
-                    is Resource.Success -> {
-                        (it.data as MovieInfo).apply {
-                            _details.value = this
-                        }
-                        _uiState.value = UIState.successState()
-                    }
-                    is Resource.Error -> {
-                        _uiState.value = UIState.errorState(errorText = it.message)
-                    }
-
+            repository.getMovieDetails(movieId)
+                .catch {
+                    it.printStackTrace()
                 }
-            }
+                .flowOn(Dispatchers.IO)
+                .collect{
+                    _movieDetail.emit(it)
+                }
         }
+    }
+
+     private fun fetchMovieDetails(){
+         viewModelScope.launch {
+             try {
+                 _movieDetailsUiState.value = MovieDetailsUiState.Loading
+                 repository.getMovieDetails(movieId)
+                     .flowOn(Dispatchers.IO)
+                     .collect{movieDetails ->
+                         println("The movieDetails aree: $movieDetails")
+                         _movieDetailsUiState.value = MovieDetailsUiState.Success(movieDetails)
+                     }
+             }catch(e: Exception){
+                 _movieDetailsUiState.value = MovieDetailsUiState.Error(e.message ?: "Unknown error message")
+             }
+         }
     }
 }

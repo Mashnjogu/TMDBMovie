@@ -49,6 +49,7 @@ class MoviesViewModel @Inject constructor(
                 .flowOn(Dispatchers.IO)
                 .collect{
                     val popularMovies = it.results
+
                     println("Popular Movies: $popularMovies")
 //                    Log.d("MyTag", "Popular Movies: $popularMovies")
                     if (popularMovies.isNotEmpty()){

@@ -34,3 +34,5 @@ sealed class BottomNavigationScreens(
         icon = Icons.Default.Favorite
     )
 }
+
+const val MOVIE_DETAIL_ID_KEY = "movieId"

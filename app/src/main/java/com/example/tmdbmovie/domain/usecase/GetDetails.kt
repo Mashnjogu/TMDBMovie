@@ -8,22 +8,22 @@ import kotlinx.coroutines.flow.flow
 
 import javax.inject.Inject
 
-class GetDetails @Inject constructor(private val repository: MovieRepository){
-
-    operator fun invoke(mediaType: MediaType, id: Int, seasonNumber: Int? = null, episodeNumber: Int? = null)
-    : Flow<Resource<Any>>  = flow{
-        emit(
-            when(mediaType){
-                 MediaType.MOVIE ->{
-                     repository.getMovieDetails(id)
-                 }
-                MediaType.TV -> {
-                    repository.getMovieDetails(id)
-                }
-                MediaType.PERSON -> {
-                    repository.getMovieDetails(id)
-                }
-            }
-                    )
-    }
-}
+//class GetDetails @Inject constructor(private val repository: MovieRepository){
+//
+//    operator fun invoke(mediaType: MediaType, id: Int, seasonNumber: Int? = null, episodeNumber: Int? = null)
+//    : Flow<Resource<Any>>  = flow{
+//        emit(
+//            when(mediaType){
+//                 MediaType.MOVIE ->{
+//                     repository.getMovieDetails(id)
+//                 }
+//                MediaType.TV -> {
+//                    repository.getMovieDetails(id)
+//                }
+//                MediaType.PERSON -> {
+//                    repository.getMovieDetails(id)
+//                }
+//            }
+//                    )
+//    }
+//}

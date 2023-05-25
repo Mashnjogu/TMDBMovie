@@ -1,11 +1,14 @@
 package com.example.tmdbmovie.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,6 +17,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -35,7 +39,8 @@ fun TabCardMovieContent(
         modifier =
         modifier
             .fillMaxWidth()
-            .height(screenHeight * 0.35f),
+            .height(screenHeight * 0.35f)
+            .background(MaterialTheme.colors.background),
 
     ) {
 
@@ -122,6 +127,24 @@ fun EmptyCard2(
     ) {
         ScrollEffectChange(trendingMovies = trendingMovies, allGenres = allGenres)
     }
+}
+
+@Composable
+fun GenreChip(name: String){
+    Card(
+        shape = RoundedCornerShape(10.dp),
+
+    ){
+        Text(text = name, style = MaterialTheme.typography.h5, modifier = Modifier.padding(6.dp))
+    }
+}
+
+val genreName = "Dennis"
+
+@Preview
+@Composable
+fun GenreChipPreview(){
+    GenreChip(genreName)
 }
 
 

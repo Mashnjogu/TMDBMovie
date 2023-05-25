@@ -11,10 +11,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.tmdbmovie.extras.BottomNavigationScreens
+import com.example.tmdbmovie.extras.MOVIE_DETAIL_ID_KEY
 import com.example.tmdbmovie.extras.Routes
 import com.example.tmdbmovie.extras.TMDBAppState
 import com.example.tmdbmovie.presentation.FavoriteScreen.FavoriteScreen
@@ -86,10 +89,16 @@ fun NavGraphBuilder.TMDBGraph(appState: TMDBAppState, navController: NavHostCont
     composable(BottomNavigationScreens.Favorite.route){
         FavoriteScreen()
     }
-    composable("${Routes.MovieDetail.route}/{${Routes.MovieDetail.Args.movieId}}"){
-        val movieId = it.arguments?.getString(Routes.MovieDetail.Args.movieId)?.toInt()
-            ?: throw IllegalStateException("Missing movieId argument")
-        MovieDetailScreen(movieId = movieId)
+    composable(
+//        "${Routes.MovieDetail.route}/{${Routes.MovieDetail.Args.movieId}}",
+        "${Routes.MovieDetail.route}/{$MOVIE_DETAIL_ID_KEY}",
+        arguments = listOf(
+            navArgument(MOVIE_DETAIL_ID_KEY){type = NavType.IntType}
+        )
+    ){
+//        val movieId = it.arguments?.getString(Routes.MovieDetail.Args.movieId)?.toInt()
+//            ?: throw IllegalStateException("Missing movieId argument")
+        MovieDetailScreen()
     }
 
 }

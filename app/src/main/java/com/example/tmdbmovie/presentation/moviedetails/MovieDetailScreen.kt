@@ -1,43 +1,48 @@
 package com.example.tmdbmovie.presentation.moviedetails
 
+
+import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.tmdbmovie.R
-import com.example.tmdbmovie.data.model.movies.MovieDataDTO
-import com.example.tmdbmovie.domain.util.dummyImage
-import com.example.tmdbmovie.extras.Routes
+import com.example.tmdbmovie.composables.GenreChip
+import com.example.tmdbmovie.data.model.genre.MovieGenreDTO
+import com.example.tmdbmovie.domain.model.Person
+import com.example.tmdbmovie.domain.util.BACKDROPPATHURL
+import com.example.tmdbmovie.extras.MovieDetailsUiState
 
 private val headerHeight = 420.dp
 private val toolbarHeight = 56.dp
@@ -50,9 +55,8 @@ private const val titleFontScaleEnd = 0.66f
 @Composable
 fun MovieDetailScreen(
     modifier: Modifier = Modifier,
-    movieId: Int
 ) {
-
+    val movieDetailViewModel = hiltViewModel<MovieDetailsViewModel>()
     val scroll: ScrollState = rememberScrollState(0)
     val headerHeightPx = with(LocalDensity.current){
         headerHeight.toPx()
@@ -61,21 +65,17 @@ fun MovieDetailScreen(
         toolbarHeight.toPx()
     }
     Box(modifier = modifier.fillMaxSize()){
-        Header(headerHeightPx = headerHeightPx, scroll = scroll)
-        Body(scrollState = scroll, movieId = movieId)
+        Header(headerHeightPx = headerHeightPx, scroll = scroll, viewModel = movieDetailViewModel)
+        Body(scrollState = scroll, viewModel = movieDetailViewModel)
         Toolbar(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx)
-        Title(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx)
+        Title(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx, viewModel = movieDetailViewModel)
     }
 }
 
-//@Composable
-//fun CollapsingToolBar(modifier: Modifier = Modifier){
-//
-//}
-
-
 @Composable
-private fun Header(modifier: Modifier = Modifier, headerHeightPx: Float, scroll: ScrollState){
+private fun Header(modifier: Modifier = Modifier, headerHeightPx: Float, scroll: ScrollState, viewModel: MovieDetailsViewModel){
+
+    val uiState by viewModel.movieDetailsUiState.collectAsState()
 
     Box(modifier = modifier
         .fillMaxWidth()
@@ -84,88 +84,201 @@ private fun Header(modifier: Modifier = Modifier, headerHeightPx: Float, scroll:
             alpha = (-1f / headerHeightPx) * scroll.value + 1
         }
     ){
-        Card(
-            modifier = modifier
+        when(val currentState = uiState){
+            is MovieDetailsUiState.Loading ->{
+                Card(
+                    modifier = modifier
 //                .padding(4.dp)
-                .fillMaxWidth()
-                .aspectRatio(1f),
-            elevation = 8.dp,
-        ){
-            AsyncImage(
-                error = painterResource(id = R.drawable.ic_broken_image),
-                placeholder = painterResource(id = R.drawable.loading_img),
-                model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(dummyImage)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = stringResource(id = R.string.filmPhoto),
-                contentScale = ContentScale.FillBounds
-            )
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .background(Color.Gray),
+                    elevation = 8.dp
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            is MovieDetailsUiState.Success -> {
+                val movieImage = currentState.movieDetails.backdrop_path
 
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color(0xAA000000)),
-                            startY = 3 * headerHeightPx / 4 // to wrap the title only
-                        )
+                Card(
+                    modifier = modifier
+//                .padding(4.dp)
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
+                    elevation = 8.dp,
+                ){
+                    AsyncImage(
+                        error = painterResource(id = R.drawable.ic_broken_image),
+                        placeholder = painterResource(id = R.drawable.loading_img),
+                        model = ImageRequest.Builder(context = LocalContext.current)
+                            .data("$BACKDROPPATHURL${movieImage}")
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = stringResource(id = R.string.filmPhoto),
+                        contentScale = ContentScale.Crop
+
                     )
-            )
-        }
 
+                    Box(
+                        modifier = modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(Color.Transparent, Color(0xAA000000)),
+                                    startY = 3 * headerHeightPx / 4 // to wrap the title only
+                                )
+                            )
+                    )
+                }
+            }
+            is MovieDetailsUiState.Error -> {}
+        }
 
     }
 }
 
 @Composable
-fun Body(modifier: Modifier = Modifier, scrollState: ScrollState, movieId: Int){
+fun Body(
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState,
+    viewModel: MovieDetailsViewModel,
+) {
+
+    val uiState by viewModel.movieDetailsUiState.collectAsState()
+
+    val movieDetailState = viewModel.movieDetail.collectAsState()
+    val movieImage = movieDetailState.value?.backdrop_path
+
+
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.verticalScroll(scrollState)
+//        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .verticalScroll(scrollState)
+            .padding(10.dp)
     ) {
-        Spacer(modifier = modifier.height(headerHeight))
-        Text(text = "The movie Id is: ${movieId}")
-        repeat(5) {
-            Text(
-                text = "The “Body” composable is as simple as a Column with some Text. But remember, this composable is under the scope of a Box which fills the entire screen (see “CollapsingToolbar” composable above). It means that the “Body” composable overlaps the header while we actually want it to be placed beneath it.\n" +
-                        "\n" +
-                        "So we are going to use a Spacer (transparent by default) of the same size as the header and fill the remaining space with our Column to do the trick.",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Justify,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp)
-            )
+        Spacer(Modifier.height(headerHeight))
+
+
+        when (val currentState = uiState) {
+            is MovieDetailsUiState.Loading -> {
+                CircularProgressIndicator()
+            }
+            is MovieDetailsUiState.Success -> {
+
+
+                val movieDetails = currentState.movieDetails
+                val configuration = LocalConfiguration.current
+                val screenWidth = configuration.screenWidthDp.dp
+
+                val genreNames = movieDetails.genres.map {
+                    it.name
+                }
+
+                val movieCast = movieDetails.credits.cast.map {
+                    Person(
+                        character = it.character,
+                        department = it.department,
+                        id = it.id,job = null,
+                        knownForDepartment = it.knownForDepartment,
+                        name = it.name,
+                        profilePath = it.profilePath
+                    )
+                }
+
+//
+                Row(
+                    modifier = modifier.padding(PaddingValues(horizontal = 8.dp)),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Column(){
+                        Text(text = "Released on : ${movieDetails.release_date}",
+                            style = androidx.compose.material.MaterialTheme.typography.h5 )
+                        Text(
+                            text = "Rating: ${movieDetails.vote_average}",
+                            style = androidx.compose.material.MaterialTheme.typography.h5
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(screenWidth * 0.25f))
+                    Card(modifier = modifier
+                        .height(80.dp)
+                        .width(85.dp)
+
+                    ){
+                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "",
+                            modifier = modifier.padding(4.dp))
+                    }
+
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Genre:", style = androidx.compose.material.MaterialTheme.typography.h5)
+
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyRow( horizontalArrangement = Arrangement.spacedBy(6.dp)){
+                   items(genreNames){
+                       GenreChip(it)
+                   }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Summary:",
+                    style = androidx.compose.material.MaterialTheme.typography.h5,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "${movieDetails.overview}",  style = androidx.compose.material
+                    .MaterialTheme.typography.h5)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Cast",  style = androidx.compose.material.MaterialTheme.typography.h5)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "The movie cast 1 is: ${movieCast[1].name}")
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)){ 
+                    items(items = movieCast, key = {person -> person.id }){
+                        Text(text = it.name)
+                    }
+                }
+                Text(text = "Trailers",  style = androidx.compose.material.MaterialTheme.typography.h5)
+//                Card(modifier = Modifier
+//                    .height(138.dp)
+//                    .background(Color.Red)) {
+//                    Text(text = "hola hola")
+//                }
+                
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Similar movies",  style = androidx.compose.material.MaterialTheme.typography.h5)
+
+            }
+            is MovieDetailsUiState.Error -> {}
         }
+
+
     }
+
 }
 
-@Composable
-private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float) {
 
-    val toolbarBottom by remember{
-        mutableStateOf(headerHeightPx - toolbarHeightPx)
-    }
+    @Composable
+    private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float) {
 
-    val showToolbar by remember {
-        derivedStateOf {
-            scroll.value >= toolbarBottom
+        val toolbarBottom by remember {
+            mutableStateOf(headerHeightPx - toolbarHeightPx)
         }
-    }
 
-    AnimatedVisibility(
-        visible = showToolbar,
-        enter = fadeIn(animationSpec = tween(300)),
-        exit =  fadeOut(animationSpec = tween(300))
-    ){
-        TopAppBar(
-            modifier = Modifier.background(
-                brush = Brush.horizontalGradient(
-                    listOf(Color(0xff026586), Color(0xff032C45))
-                )
-            ),
+        val showToolbar by remember {
+            derivedStateOf {
+                scroll.value >= toolbarBottom
+            }
+        }
+
+        AnimatedVisibility(
+            visible = showToolbar,
+            enter = fadeIn(animationSpec = tween(300)),
+            exit = fadeOut(animationSpec = tween(300))
+        ) {
+            TopAppBar(
+                modifier = Modifier.background(
+                    brush = Brush.horizontalGradient(
+                        listOf(Color(0xff026586), Color(0xff032C45))
+                    )
+                ),
 //        navigationIcon = {
 //            IconButton(
 //                onClick = {},
@@ -180,103 +293,122 @@ private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx:
 //                )
 //            }
 //        },
-            title = {},
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp
-        )
+                title = {},
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp
+            )
+        }
+
     }
 
-}
+    @Composable
+    private fun Title(
+        modifier: Modifier = Modifier,
+        scroll: ScrollState, headerHeightPx: Float,
+        toolbarHeightPx: Float,
+        viewModel: MovieDetailsViewModel,
+    ) {
 
-@Composable
-private fun Title(
-    modifier: Modifier = Modifier,
-    scroll: ScrollState, headerHeightPx: Float,
-    toolbarHeightPx: Float
-) {
+        val movieDetailState = viewModel.movieDetail.collectAsState()
+        val movieTitle = movieDetailState.value?.title
 
-    var titleHeightPx by remember {
-        mutableStateOf(0f)
-    }
-    var titleWidthPx by remember { mutableStateOf(0f) }
+        var titleHeightPx by remember {
+            mutableStateOf(0f)
+        }
+        var titleWidthPx by remember { mutableStateOf(0f) }
 
-    val titleHeightDp = with(LocalDensity.current){
-        titleHeightPx.toDp()
-    }
+        val titleHeightDp = with(LocalDensity.current) {
+            titleHeightPx.toDp()
+        }
 
-    Text(
-        text = "Nairobi Kenya",
-        fontSize = 30.sp,
-        color = Color.White,
-        fontWeight = FontWeight.Bold,
-        modifier = modifier
-            .graphicsLayer {
-                val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
-                val collapseFraction: Float = (scroll.value / collapseRange).coerceIn(0f, 1f)
+        val dominantColor by remember {
+            mutableStateOf<Color?>(null)
+        }
 
-                val scaleXY = lerp(
-                    titleFontScaleStart.dp,
-                    titleFontScaleEnd.dp,
-                    collapseFraction
-                )
+//        LaunchedEffect(dummyImage) {
+//            dominantColor = getDominantColor(imageUrl = dummyImage)
+//            println("The dominant color is: ${getDominantColor(imageUrl = dummyImage)}")
+//        }
 
-                val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 2f
+
+        Text(
+            text = movieTitle ?: "Cannot Retrieve Title",
+            fontSize = 30.sp,
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            modifier = modifier
+                .graphicsLayer {
+                    val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
+                    val collapseFraction: Float = (scroll.value / collapseRange).coerceIn(0f, 1f)
+
+                    val scaleXY = lerp(
+                        titleFontScaleStart.dp,
+                        titleFontScaleEnd.dp,
+                        collapseFraction
+                    )
+
+                    val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 2f
 
 //                Let’s first calculate P0P1 lerp
-                val titleYFirstInterpolatedPoint = lerp(
-                    headerHeight - titleHeightDp - paddingMedium,
-                    headerHeight / 2,
-                    collapseFraction
-                )
+                    val titleYFirstInterpolatedPoint = lerp(
+                        headerHeight - titleHeightDp - paddingMedium,
+                        headerHeight / 2,
+                        collapseFraction
+                    )
 
-                val titleXFirstInterpolatedPoint = lerp(
-                    titlePaddingStart,
-                    (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
-                    collapseFraction
-                )
+                    val titleXFirstInterpolatedPoint = lerp(
+                        titlePaddingStart,
+                        (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
+                        collapseFraction
+                    )
 
 //                Then let’s calculate P1P2 lerp
-                val titleYSecondInterpolatedPoint = lerp(
-                    (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
-                    toolbarHeight / 2 - titleHeightDp / 2,
-                    collapseFraction
-                )
+                    val titleYSecondInterpolatedPoint = lerp(
+                        (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
+                        toolbarHeight / 2 - titleHeightDp / 2,
+                        collapseFraction
+                    )
 
-                val titleXSecondInterpolatedPoint = lerp(
-                    titlePaddingEnd * 5 / 4,
-                    titlePaddingEnd,
-                    collapseFraction
-                )
-                /* let’s calculate the quadratic Bézier curve Z based
+                    val titleXSecondInterpolatedPoint = lerp(
+                        titlePaddingEnd * 5 / 4,
+                        titlePaddingEnd,
+                        collapseFraction
+                    )
+                    /* let’s calculate the quadratic Bézier curve Z based
                 of these two nested “lerps” on the Y axis:
                 */
 
-                val titleY = lerp(
-                    titleYFirstInterpolatedPoint,
-                    titleYSecondInterpolatedPoint,
-                    collapseFraction
-                )
+                    val titleY = lerp(
+                        titleYFirstInterpolatedPoint,
+                        titleYSecondInterpolatedPoint,
+                        collapseFraction
+                    )
 
-                val titleX = lerp(
-                    titleXFirstInterpolatedPoint,
-                    titleXSecondInterpolatedPoint,
-                    collapseFraction
-                )
+                    val titleX = lerp(
+                        titleXFirstInterpolatedPoint,
+                        titleXSecondInterpolatedPoint,
+                        collapseFraction
+                    )
 
-                translationY = titleY.toPx()
-                translationX = titleX.toPx()
-                scaleX = scaleXY.value
-                scaleY = scaleXY.value
-            }
-            .onGloballyPositioned {
-                // We don't know title height in advance to calculate the lerp
-                // so we wait for initial composition
-                titleHeightPx = it.size.height.toFloat()
-            }
-    )
+                    translationY = titleY.toPx()
+                    translationX = titleX.toPx()
+                    scaleX = scaleXY.value
+                    scaleY = scaleXY.value
+                }
+                .onGloballyPositioned {
+                    // We don't know title height in advance to calculate the lerp
+                    // so we wait for initial composition
+                    titleHeightPx = it.size.height.toFloat()
+                }
+        )
+    }
+
+fun extractDominantImage(bitmap: Bitmap): Color? {
+    val palette = Palette.from(bitmap).generate()
+    val dominantSwatch = palette.dominantSwatch?.rgb
+    return dominantSwatch?.let { Color(it) }
 }
 
+fun getGenreNames(genres: List<MovieGenreDTO>){
 
-
-
-
+}

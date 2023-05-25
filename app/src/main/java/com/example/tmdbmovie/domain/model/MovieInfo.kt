@@ -1,15 +1,15 @@
 package com.example.tmdbmovie.domain.model
 
 import com.example.tmdbmovie.data.model.genre.Genre
-import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 
 data class MovieInfo(
     val id: Int,
     val title: String,
     val backdrop_path: String?,
+    val genreIds: List<Int>,
     val genres: List<Genre>,
     val original_language: String,
-    val overview: String,
+    val overview: String?,
     val poster_path: String?,
     val release_date: String?,
     val vote_average: Double,
@@ -26,6 +26,7 @@ data class MovieInfo(
             id = 0,
             title = "",
             backdrop_path = null,
+            genreIds = emptyList(),
             genres = emptyList(),
             original_language = "",
             overview = "",

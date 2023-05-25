@@ -1,11 +1,11 @@
 package com.example.tmdbmovie.domain.repository
 
 import com.example.tmdbmovie.data.model.genre.MovieGenre
+import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.domain.model.MovieInfo
 import com.example.tmdbmovie.extras.Resource
-import com.example.tmdbmovie.extras.Routes
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
@@ -29,5 +29,5 @@ interface MovieRepository {
 
     suspend fun getMovieGenres(): Flow<MovieGenre>
 
-    suspend fun getMovieDetails(movieId: Int): Resource<MovieInfo>
+    suspend fun getMovieDetails(movieId: Int): Flow<MovieDetailDTO>
 }

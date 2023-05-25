@@ -11,29 +11,51 @@ import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
+//@Singleton
+//class SafeApiCall @Inject constructor(@ApplicationContext val context: Context): ISafeApiCall{
+//    override suspend  fun<T> execute(body: suspend () -> T): Resource<T>{
+//        return try {
+//            Resource.Success(
+//                withContext(Dispatchers.IO){
+//                    body()
+//                }
+//            )
+//        }catch(e: Exception){
+//            Resource.Error(
+//                when(e){
+//                    is IOException -> { context.getString(R.string.error_connection)}
+//                    is HttpException -> {
+//                        if (e.code() == 504){
+//                            context.getString(R.string.error_connection)
+//                        }else{
+//                            context.getString(R.string.error_service)
+//                        }
+//                    }
+//                    else -> {
+//                        context.getString(R.string.error_unknown)
+//                    }
+//                }
+//            )
+//        }
+//    }
+//}
+
 @Singleton
-class SafeApiCall @Inject constructor(@ApplicationContext val context: Context): ISafeApiCall{
-    override suspend  fun<T> execute(body: suspend () -> T): Resource<T>{
+class SafeApiCall @Inject constructor(@ApplicationContext val context: Context) {
+    suspend inline fun <T> execute(crossinline body: suspend () -> T): Resource<T> {
         return try {
             Resource.Success(
-                withContext(Dispatchers.IO){
-                    body()
-                }
+                withContext(Dispatchers.IO) { body() }
             )
-        }catch(e: Exception){
+        } catch (e: Exception) {
             Resource.Error(
-                when(e){
-                    is IOException -> { context.getString(R.string.error_connection)}
+                when (e) {
+                    is IOException -> context.getString(R.string.error_connection)
                     is HttpException -> {
-                        if (e.code() == 504){
-                            context.getString(R.string.error_connection)
-                        }else{
-                            context.getString(R.string.error_service)
-                        }
+                        if (e.code() == 504) context.getString(R.string.error_connection)
+                        else context.getString(R.string.error_service)
                     }
-                    else -> {
-                        context.getString(R.string.error_unknown)
-                    }
+                    else -> context.getString(R.string.error_unknown)
                 }
             )
         }

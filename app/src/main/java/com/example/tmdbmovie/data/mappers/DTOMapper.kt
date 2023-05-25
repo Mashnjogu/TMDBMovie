@@ -1,3 +1,4 @@
+
 package com.example.tmdbmovie.data.mappers
 
 import com.example.tmdbmovie.data.model.credits.CreditsDTO
@@ -29,7 +30,8 @@ fun MovieDetailDTO.toMovieDetail() = MovieInfo(
     id = id,
     title= title,
     backdrop_path = backdrop_path,
-    genres= genres.map { it.toGenre() },
+    genreIds= genreIds,
+    genres = genres.map { it.toGenre() },
     original_language = original_language,
     overview = overview,
     poster_path = poster_path,

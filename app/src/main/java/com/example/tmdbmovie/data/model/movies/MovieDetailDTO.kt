@@ -1,7 +1,6 @@
 package com.example.tmdbmovie.data.model.movies
 
 import com.example.tmdbmovie.data.model.credits.CreditsDTO
-import com.example.tmdbmovie.data.model.genre.Genre
 import com.example.tmdbmovie.data.model.genre.MovieGenreDTO
 import com.example.tmdbmovie.data.model.videos.VideoListDTO
 import com.google.gson.annotations.SerializedName
@@ -14,11 +13,13 @@ data class MovieDetailDTO(
     @SerializedName("backdrop_path")
     val backdrop_path: String?,
     @SerializedName("genre_ids")
+    val genreIds: List<Int>,
+    @SerializedName("genres")
     val genres: List<MovieGenreDTO>,
     @SerializedName("original_language")
     val original_language: String,
     @SerializedName("overview")
-    val overview: String,
+    val overview: String?,
     @SerializedName("poster_path")
     val poster_path: String?,
     @SerializedName("release_date")
