@@ -38,7 +38,9 @@ import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.tmdbmovie.R
+import com.example.tmdbmovie.composables.CastProfileCard
 import com.example.tmdbmovie.composables.GenreChip
+import com.example.tmdbmovie.composables.TabCardMovieContent
 import com.example.tmdbmovie.data.model.genre.MovieGenreDTO
 import com.example.tmdbmovie.domain.model.Person
 import com.example.tmdbmovie.domain.util.BACKDROPPATHURL
@@ -169,6 +171,8 @@ fun Body(
                 val movieDetails = currentState.movieDetails
                 val configuration = LocalConfiguration.current
                 val screenWidth = configuration.screenWidthDp.dp
+                val screenHeight = configuration.screenHeightDp.dp
+                val similarMoviesHeight = screenHeight * 0.27f
 
                 val genreNames = movieDetails.genres.map {
                     it.name
@@ -185,7 +189,10 @@ fun Body(
                     )
                 }
 
-//
+                val similarMovies = movieDetails.similar.results
+
+
+
                 Row(
                     modifier = modifier.padding(PaddingValues(horizontal = 8.dp)),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -226,29 +233,22 @@ fun Body(
                 Text(text = "${movieDetails.overview}",  style = androidx.compose.material
                     .MaterialTheme.typography.h5)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Cast",  style = androidx.compose.material.MaterialTheme.typography.h5)
+                Text(text = "Cast:",  style = androidx.compose.material.MaterialTheme.typography.h5)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "The movie cast 1 is: ${movieCast[1].name}")
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)){ 
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(15.dp)){
                     items(items = movieCast, key = {person -> person.id }){
-                        Text(text = it.name)
+                        CastProfileCard(personDetail = it)
                     }
                 }
-                Text(text = "Trailers",  style = androidx.compose.material.MaterialTheme.typography.h5)
-//                Card(modifier = Modifier
-//                    .height(138.dp)
-//                    .background(Color.Red)) {
-//                    Text(text = "hola hola")
-//                }
-                
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Similar movies",  style = androidx.compose.material.MaterialTheme.typography.h5)
-
+                Text(text = "Trailers:",  style = androidx.compose.material.MaterialTheme.typography.h5)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Similar movies:",  style = androidx.compose.material.MaterialTheme.typography.h5)
+                TabCardMovieContent(images = similarMovies, onNavigateToMovieDeatils = {}, screenHeight = similarMoviesHeight)
+                Spacer(modifier = Modifier.height(12.dp))
             }
             is MovieDetailsUiState.Error -> {}
         }
-
 
     }
 

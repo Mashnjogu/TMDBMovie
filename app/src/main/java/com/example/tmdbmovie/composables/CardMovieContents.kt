@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -30,16 +31,17 @@ import com.example.tmdbmovie.domain.util.POSTERPATHURL
 fun TabCardMovieContent(
     modifier: Modifier = Modifier,
     images: List<MovieDataDTO>,
-    onNavigateToMovieDeatils: (Int) -> Unit
+    onNavigateToMovieDeatils: (Int) -> Unit,
+    screenHeight: Dp
 ){
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
+//    val configuration = LocalConfiguration.current
+//    val screenHeight = configuration.screenHeightDp.dp
 
     Card(
         modifier =
         modifier
             .fillMaxWidth()
-            .height(screenHeight * 0.35f)
+            .height(screenHeight)
             .background(MaterialTheme.colors.background),
 
     ) {

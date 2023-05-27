@@ -72,6 +72,7 @@ fun Home(
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
+    val movieScreenHeight = screenHeight * 0.35f
 
     val dropdownMenuOption = listOf<String>("Movies", "TV Shows")
 
@@ -115,6 +116,10 @@ fun Home(
     val trendingShows = trendingShowsState.value
 
     val trendingFilmsSize = (trendingMovies?.size ?: 0) + (trendingShows?.size ?: 0)
+
+
+
+
 
 
 //    println("The list of movie genres are : ${movieGenres?.size}")
@@ -179,12 +184,10 @@ fun Home(
             }
         }
 
-
-
         when(tabIndexMovie){
             0 -> {
                 if (popularMovies != null) {
-                    TabCardMovieContent( images = popularMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails)
+                    TabCardMovieContent( images = popularMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails, screenHeight = movieScreenHeight)
                 }else{
                     EmptyCard()
                 }
@@ -193,7 +196,7 @@ fun Home(
             1 -> {
 
                 if (topRatedMovies != null) {
-                    TabCardMovieContent(images = topRatedMovies,onNavigateToMovieDeatils = onNavigateToMovieDetails)
+                    TabCardMovieContent(images = topRatedMovies,onNavigateToMovieDeatils = onNavigateToMovieDetails, screenHeight = movieScreenHeight)
                 }else{
                     EmptyCard()
                 }
@@ -202,7 +205,7 @@ fun Home(
 
             2 -> {
                 if (nowPlayingMovies != null) {
-                    TabCardMovieContent(images = nowPlayingMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails)
+                    TabCardMovieContent(images = nowPlayingMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails, screenHeight = movieScreenHeight)
                 }else{
                     EmptyCard()
                 }
@@ -210,7 +213,7 @@ fun Home(
 
             3 -> {
                 if (upComingMovies != null) {
-                    TabCardMovieContent(images = upComingMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails)
+                    TabCardMovieContent(images = upComingMovies, onNavigateToMovieDeatils = onNavigateToMovieDetails, screenHeight = movieScreenHeight)
                 }else{
                     EmptyCard()
                 }
