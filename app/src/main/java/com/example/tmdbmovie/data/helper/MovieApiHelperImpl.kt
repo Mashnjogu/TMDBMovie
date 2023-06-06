@@ -2,8 +2,10 @@ package com.example.tmdbmovie.data.helper
 
 
 import android.content.Context
+import androidx.compose.animation.core.estimateAnimationDurationMillis
 import com.example.tmdbmovie.data.mappers.toMovieDetail
 import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
+import com.example.tmdbmovie.data.model.search.MultiSearchResponse
 import com.example.tmdbmovie.data.remote.MovieApiService
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
 import com.example.tmdbmovie.domain.model.MovieInfo
@@ -102,6 +104,14 @@ class MovieApiHelperImpl @Inject constructor(
         try{
             emit(apiService.getTrendingShows())
         }catch(e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun getMultiSearch(query: String, page: Int): Flow<MultiSearchResponse> = flow {
+        try {
+            emit(apiService.getMultiSearch(query, page))
+        }catch (e: Exception){
             e.printStackTrace()
         }
     }

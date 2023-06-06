@@ -3,6 +3,7 @@ package com.example.tmdbmovie.data.repository
 import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
+import com.example.tmdbmovie.data.model.search.MultiSearchResponse
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
 import com.example.tmdbmovie.domain.model.MovieInfo
@@ -10,6 +11,7 @@ import com.example.tmdbmovie.domain.repository.MovieRepository
 import com.example.tmdbmovie.extras.Resource
 import com.example.tmdbmovie.extras.SafeApiCall
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.toList
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
@@ -56,6 +58,10 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieDetails(movieId: Int): Flow<MovieDetailDTO> {
         return moviesApiHelper.getMovieDetails(movieId)
+    }
+
+    override suspend fun getMultiSearch(query: String, page: Int): Flow<MultiSearchResponse> {
+        return moviesApiHelper.getMultiSearch(query, page)
     }
 
 

@@ -3,9 +3,11 @@ package com.example.tmdbmovie.data.remote
 import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
+import com.example.tmdbmovie.data.model.search.MultiSearchResponse
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MovieApiService {
 
@@ -42,5 +44,11 @@ interface MovieApiService {
 
     @GET("movie/{movie_id}?&append_to_response=credits,videos,similar")
     suspend fun getMovieDetails(@Path("movie_id") movieId: Int): MovieDetailDTO
+
+    @GET("search/multi")
+    suspend fun getMultiSearch(
+        @Query("query") query: String,
+        @Query("page") page: Int
+    ): MultiSearchResponse
 
 }

@@ -3,6 +3,7 @@ package com.example.tmdbmovie.domain.helper
 import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
+import com.example.tmdbmovie.data.model.search.MultiSearchResponse
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.domain.model.MovieInfo
 import com.example.tmdbmovie.extras.Resource
@@ -34,4 +35,7 @@ interface MovieApiHelper {
     suspend fun getOnAirShows(): Flow<TvShowDTO>
 
     suspend fun getTrendingShows(): Flow<TvShowDTO>
+
+    //MultiSearch
+    suspend fun getMultiSearch(query: String, page: Int): Flow<MultiSearchResponse>
 }
