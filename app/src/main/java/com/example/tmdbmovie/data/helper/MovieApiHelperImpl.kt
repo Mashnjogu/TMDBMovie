@@ -6,6 +6,7 @@ import androidx.compose.animation.core.estimateAnimationDurationMillis
 import com.example.tmdbmovie.data.mappers.toMovieDetail
 import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.search.MultiSearchResponse
+import com.example.tmdbmovie.data.model.tvshows.TvDetailDataDTO
 import com.example.tmdbmovie.data.remote.MovieApiService
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
 import com.example.tmdbmovie.domain.model.MovieInfo
@@ -104,6 +105,14 @@ class MovieApiHelperImpl @Inject constructor(
         try{
             emit(apiService.getTrendingShows())
         }catch(e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun getTvShowDetails(seriesId: Int): Flow<TvDetailDataDTO> = flow {
+        try {
+            emit(apiService.getTvShowDetails(seriesId))
+        }catch (e: Exception){
             e.printStackTrace()
         }
     }

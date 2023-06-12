@@ -36,4 +36,5 @@ data class MovieDetailDTO(
     val similar: MoviesDTO,
     @SerializedName("runtime")
     val runtime: Int?,
+
 )

@@ -14,7 +14,11 @@ sealed class Routes(val route: String){
             const val movieId = "movieId"
         }
     }
-    object ShowDetail: Routes("ShowDetail")
+    object ShowDetail: Routes("ShowDetail/${Args.tvShowId}"){
+        object Args{
+            const val tvShowId = "tvShowId"
+        }
+    }
 }
 
 sealed class BottomNavigationScreens(
@@ -36,3 +40,4 @@ sealed class BottomNavigationScreens(
 }
 
 const val MOVIE_DETAIL_ID_KEY = "movieId"
+const val TV_SHOWDETAIL_ID_KEY = "tvShowId"

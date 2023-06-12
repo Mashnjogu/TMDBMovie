@@ -25,7 +25,8 @@ import com.example.tmdbmovie.ui.theme.SoftYellow
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    onNavigateToMovieDetails: (Int) -> Unit
+    onNavigateToMovieDetails: (Int) -> Unit,
+    onNavigateToShowDetails: (Int) -> Unit,
 ){
 
     val scaffoldState = rememberScaffoldState()
@@ -55,7 +56,12 @@ fun HomeScreen(
                  )
         },
         content = { paddingValues ->
-            Home(paddingValues = paddingValues, scrollState = scrollState, onNavigateToMovieDetails = onNavigateToMovieDetails)
+            Home(
+                paddingValues = paddingValues,
+                scrollState = scrollState,
+                onNavigateToMovieDetails = onNavigateToMovieDetails,
+                onNavigateToShowDetails = onNavigateToShowDetails
+            )
         },
         bottomBar = {
             BottomBar(navController = navController)
@@ -68,7 +74,8 @@ fun Home(
     paddingValues: PaddingValues,
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
-    onNavigateToMovieDetails: (Int) -> Unit
+    onNavigateToMovieDetails: (Int) -> Unit,
+    onNavigateToShowDetails: (Int) -> Unit
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -116,11 +123,6 @@ fun Home(
     val trendingShows = trendingShowsState.value
 
     val trendingFilmsSize = (trendingMovies?.size ?: 0) + (trendingShows?.size ?: 0)
-
-
-
-
-
 
 //    println("The list of movie genres are : ${movieGenres?.size}")
     println("The popular movies are: ${popularMovies}")
@@ -257,7 +259,7 @@ fun Home(
         when(tabIndexShow){
             0 -> {
                 if (popularShows != null){
-                    TabCardTvShowContent(images = popularShows)
+                    TabCardTvShowContent(images = popularShows, onNavigateToTvShowDetails = onNavigateToShowDetails,screenHeight = movieScreenHeight)
                 }else{
                     EmptyCard()
                 }
@@ -265,7 +267,7 @@ fun Home(
 
             1 -> {
                 if (topRatedShows != null){
-                    TabCardTvShowContent(images = topRatedShows)
+                    TabCardTvShowContent(images = topRatedShows, onNavigateToTvShowDetails = onNavigateToShowDetails, screenHeight = movieScreenHeight)
                 }else{
                     EmptyCard()
                 }
@@ -273,7 +275,7 @@ fun Home(
 
             2 -> {
                 if (onAirShows != null){
-                    TabCardTvShowContent(images = onAirShows)
+                    TabCardTvShowContent(images = onAirShows, onNavigateToTvShowDetails = onNavigateToShowDetails, screenHeight = movieScreenHeight)
                 }else{
                     EmptyCard()
                 }

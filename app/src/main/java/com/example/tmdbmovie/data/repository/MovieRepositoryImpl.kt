@@ -4,6 +4,7 @@ import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
 import com.example.tmdbmovie.data.model.search.MultiSearchResponse
+import com.example.tmdbmovie.data.model.tvshows.TvDetailDataDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
 import com.example.tmdbmovie.domain.model.MovieInfo
@@ -62,6 +63,10 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getMultiSearch(query: String, page: Int): Flow<MultiSearchResponse> {
         return moviesApiHelper.getMultiSearch(query, page)
+    }
+
+    override suspend fun getTvShowDetails(seriesId: Int): Flow<TvDetailDataDTO> {
+        return moviesApiHelper.getTvShowDetails(seriesId)
     }
 
 

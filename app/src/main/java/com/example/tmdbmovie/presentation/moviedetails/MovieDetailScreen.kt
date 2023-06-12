@@ -312,6 +312,7 @@ fun Body(
         val movieDetailState = viewModel.movieDetail.collectAsState()
         val movieTitle = movieDetailState.value?.title
 
+
         var titleHeightPx by remember {
             mutableStateOf(0f)
         }

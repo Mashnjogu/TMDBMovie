@@ -1,5 +1,6 @@
 package com.example.tmdbmovie.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -13,6 +14,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -24,41 +26,52 @@ import com.example.tmdbmovie.domain.util.POSTERPATHURL
 @Composable
 fun TabCardTvShowContent(
     modifier: Modifier = Modifier,
-    images: List<TvShowDataDTO>
+    images: List<TvShowDataDTO>,
+    onNavigateToTvShowDetails: (Int) -> Unit,
+    screenHeight: Dp
 ){
     val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
+
 
     Card(
         modifier =
         modifier
             .fillMaxWidth()
-            .height(screenHeight * 0.35f),
+            .height(screenHeight),
 
         ) {
 
-        FilmListShowImages(films = images)
+        FilmListShowImages(films = images, onNavigateToTvShowDetails = onNavigateToTvShowDetails)
     }
 }
 
 @Composable
-fun FilmListShowImages(films: List<TvShowDataDTO>, modifier: Modifier = Modifier){
+fun FilmListShowImages(
+    films: List<TvShowDataDTO>,
+    modifier: Modifier = Modifier,
+    onNavigateToTvShowDetails: (Int) -> Unit
+){
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ){
         items(items = films, key = {film -> film.id}){ film ->
-            FilmShowImageCard(film = film)
+            FilmShowImageCard(film = film, onNavigateToTvShowDetails = {onNavigateToTvShowDetails(film.id)})
         }
     }
 }
 
 @Composable
-fun FilmShowImageCard(film: TvShowDataDTO, modifier: Modifier = Modifier){
+fun FilmShowImageCard(
+    film: TvShowDataDTO,
+    modifier: Modifier = Modifier,
+    onNavigateToTvShowDetails: () -> Unit
+){
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .aspectRatio(1f),
+            .aspectRatio(1f)
+            .clickable(onClick = onNavigateToTvShowDetails),
         elevation = 8.dp,
         shape = RoundedCornerShape(10.dp)
     ) {
