@@ -1,5 +1,6 @@
 package com.example.tmdbmovie.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,11 +28,15 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.tmdbmovie.R
+import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.data.model.search.Search
 import com.example.tmdbmovie.domain.util.BACKDROPPATHURL
 
 @Composable
-fun SearchItem(searchItem: Search, modifier: Modifier = Modifier){
+fun SearchItem(
+    searchItem: Search,
+    modifier: Modifier = Modifier,
+){
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -46,7 +51,9 @@ fun SearchItem(searchItem: Search, modifier: Modifier = Modifier){
     ){
         Row(modifier = modifier.padding(8.dp)) {
             Card(
+                modifier = modifier.clickable(onClick = {
 
+                })
             ){
                 AsyncImage(
                     error = painterResource(id = R.drawable.ic_broken_image),

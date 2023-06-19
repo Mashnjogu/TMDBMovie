@@ -1,5 +1,8 @@
 package com.example.tmdbmovie.data.repository
 
+import com.example.tmdbmovie.data.local.FavoriteTv
+import com.example.tmdbmovie.data.local.dao.TvDao
+
 import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
@@ -7,17 +10,16 @@ import com.example.tmdbmovie.data.model.search.MultiSearchResponse
 import com.example.tmdbmovie.data.model.tvshows.TvDetailDataDTO
 import com.example.tmdbmovie.data.model.tvshows.TvShowDTO
 import com.example.tmdbmovie.domain.helper.MovieApiHelper
-import com.example.tmdbmovie.domain.model.MovieInfo
+import com.example.tmdbmovie.data.mappers.*
 import com.example.tmdbmovie.domain.repository.MovieRepository
-import com.example.tmdbmovie.extras.Resource
-import com.example.tmdbmovie.extras.SafeApiCall
+
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
     private val moviesApiHelper: MovieApiHelper,
-    private val safeApiCall: SafeApiCall
+    private val tvDao: TvDao,
 ): MovieRepository{
     override suspend fun getPopularMovies(): Flow<MoviesDTO> {
         return moviesApiHelper.getPopularMovies()
@@ -67,6 +69,22 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getTvShowDetails(seriesId: Int): Flow<TvDetailDataDTO> {
         return moviesApiHelper.getTvShowDetails(seriesId)
+    }
+
+    override suspend fun getFavTvShows(): Flow<List<FavoriteTv>> {
+        return tvDao.getAllTvShows().map {
+            it.map {
+                it.toFavoriteTv()
+            }
+        }
+    }
+
+    override suspend fun addFavTvShow(tvShow: FavoriteTv) {
+        return tvDao.insertTvShow(tvShow.toFavoriteTvEntity())
+    }
+
+    override suspend fun deleteFavTvShow(tvShow: FavoriteTv) {
+        return tvDao.deleteTvShow(tvShow.toFavoriteTvEntity())
     }
 
 

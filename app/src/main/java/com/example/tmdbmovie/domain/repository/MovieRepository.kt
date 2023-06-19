@@ -1,5 +1,7 @@
 package com.example.tmdbmovie.domain.repository
 
+import com.example.tmdbmovie.data.local.FavoriteTv
+import com.example.tmdbmovie.data.local.entity.FavoriteTvEntity
 import com.example.tmdbmovie.data.model.genre.MovieGenre
 import com.example.tmdbmovie.data.model.movies.MovieDetailDTO
 import com.example.tmdbmovie.data.model.movies.MoviesDTO
@@ -36,4 +38,10 @@ interface MovieRepository {
     suspend fun getMultiSearch(query: String, page: Int): Flow<MultiSearchResponse>
 
     suspend fun getTvShowDetails(seriesId: Int): Flow<TvDetailDataDTO>
+
+    suspend fun getFavTvShows(): Flow<List<FavoriteTv>>
+
+    suspend fun addFavTvShow(tvShow: FavoriteTv)
+
+    suspend fun deleteFavTvShow(tvShow: FavoriteTv)
 }

@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -60,11 +61,13 @@ import coil.request.ImageRequest
 import com.example.tmdbmovie.R
 import com.example.tmdbmovie.composables.CastProfileCard
 import com.example.tmdbmovie.composables.GenreChip
-import com.example.tmdbmovie.composables.TabCardMovieContent
 import com.example.tmdbmovie.composables.TabCardTvShowContent
+import com.example.tmdbmovie.data.local.FavoriteTv
+import com.example.tmdbmovie.data.local.entity.FavoriteTvEntity
 import com.example.tmdbmovie.domain.model.Person
 import com.example.tmdbmovie.domain.util.BACKDROPPATHURL
 import com.example.tmdbmovie.extras.TvShowDetailsUiState
+import com.example.tmdbmovie.presentation.FavoriteScreen.FavTvViewModel
 
 private val headerHeight = 420.dp
 private val toolbarHeight = 56.dp
@@ -171,6 +174,7 @@ fun Body(
 ) {
 
     val uiState by viewModel.tvDetailsUiState.collectAsState()
+    val favViewModel = hiltViewModel<FavTvViewModel>()
 
     Column(
         modifier = modifier
@@ -228,8 +232,26 @@ fun Body(
                         .width(85.dp)
 
                     ){
-                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "",
-                            modifier = modifier.padding(4.dp))
+                        IconButton(onClick = {
+//                            favViewModel.addFaveTvShow(
+//                                FavoriteTv(
+//                                    id = showDetails.id,
+//                                    numOfSeasons = showDetails.num_of_seasons,
+//                                    firstAirDate = showDetails.firstAirDate,
+//                                    name = showDetails.name,
+//                                    backdropPath = showDetails.backdrop_path,
+//                                    voteAverage = showDetails.vote_average,
+//                                    voteCount = showDetails.vote_count,
+//                                    date = System.currentTimeMillis()
+//                                )
+//                            )
+                        }) {
+                            Icon(imageVector = Icons.Default.Favorite, contentDescription = "",
+                                modifier = modifier
+                                    .padding(4.dp)
+                            )
+                        }
+
                     }
 
                 }
@@ -278,11 +300,7 @@ fun Body(
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Row {
-                    Text(text = "Trailers:",  style = androidx.compose.material.MaterialTheme.typography.h5)
-                    Text(text = "See more",  style = androidx.compose.material.MaterialTheme.typography.h5)
-                }
-
+                Spacer(modifier = Modifier.height(8.dp))
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Similar shows:",  style = androidx.compose.material.MaterialTheme.typography.h5)
                 Text("Grid of 3")
