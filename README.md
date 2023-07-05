@@ -19,4 +19,8 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 - Room database: he Room persistence library provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite.
 
 # Screenshots
-![HomeScreen](https://github.com/Mashnjogu/TMDBMovie/assets/45306598/68d85a57-a040-47fb-bb92-eb7ac25c9713)
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![HomeScreen](https://github.com/Mashnjogu/TMDBMovie/assets/45306598/68d85a57-a040-47fb-bb92-eb7ac25c9713)  |  ![TvShowDetails](https://github.com/Mashnjogu/TMDBMovie/assets/45306598/1775b7c3-6199-42d7-9324-d40e049228ea)
+
+
