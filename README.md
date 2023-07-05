@@ -19,18 +19,18 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 - Room database: he Room persistence library provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite.
 
 # Screenshots
-<div>
+<div style="display:flex; justify-content:space-between;">
  <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/68d85a57-a040-47fb-bb92-eb7ac25c9713" alt="HomeScreen" width="400px">
  <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/b5c89650-2e05-44ff-94f2-6c771a71188c" alt="HomeScreen" width="400px">
 </div>
 
 <div>
- <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/418dc377-b2a7-44c9-9d24-53dcb2db80de" alt="HomeScreen" width="300px">
- <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/b5c89650-2e05-44ff-94f2-6c771a71188c" alt="HomeScreen" width="300px">
+ <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/418dc377-b2a7-44c9-9d24-53dcb2db80de" alt="HomeScreen" width="400px">
+ <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/b5c89650-2e05-44ff-94f2-6c771a71188c" alt="HomeScreen" width="400px">
 </div>
 
 <div>
- <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/fcbb163d-afd9-4cb4-a6ba-5ea0fe04e7bd" alt="HomeScreen" width="300px">
+ <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/fcbb163d-afd9-4cb4-a6ba-5ea0fe04e7bd" alt="HomeScreen" width="400px">
 </div>
 
 
