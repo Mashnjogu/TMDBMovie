@@ -26,8 +26,8 @@ The app is built with the Model-View-ViewModel (MVVM) is its structural design p
 </div>
 
 <div>
- <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/418dc377-b2a7-44c9-9d24-53dcb2db80de" alt="HomeScreen" width="400px">
- <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/b5c89650-2e05-44ff-94f2-6c771a71188c" alt="HomeScreen" width="400px">
+ <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/418dc377-b2a7-44c9-9d24-53dcb2db80de" alt="HomeScreen" width="400px"hspace="30">
+ <img src="https://github.com/Mashnjogu/TMDBMovie/assets/45306598/b5c89650-2e05-44ff-94f2-6c771a71188c" alt="HomeScreen" width="400px"hspace="30">
 </div>
 
 <div>
