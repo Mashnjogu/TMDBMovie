@@ -5,6 +5,7 @@ import android.widget.Toolbar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -82,7 +83,8 @@ fun RowScope.AddItem(
 
 @Composable
 fun TMDBSearchBar(
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    isDarkTheme: Boolean = isSystemInDarkTheme()
 ){
     var searchText by remember{ mutableStateOf("") }
 
@@ -107,7 +109,10 @@ fun TMDBSearchBar(
                 onSearch(it)
             },
             modifier = Modifier.weight(1f),
-            placeholder = { Text("Search") },
+            placeholder = { Text(
+                "Search",
+                color = if (isDarkTheme) Color.White else Color.Black
+            ) },
             singleLine = true,
             textStyle = MaterialTheme.typography.body1,
             colors = TextFieldDefaults.textFieldColors(

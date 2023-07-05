@@ -6,11 +6,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.tmdbmovie.data.local.entity.FavoriteMovieEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
     @Query("SELECT * FROM favoritemovieentity ORDER BY date_added DESC")
-    suspend fun getAllMovies(): List<FavoriteMovieEntity>
+    fun getAllMovies(): Flow<List<FavoriteMovieEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovie(movieEntity: FavoriteMovieEntity)

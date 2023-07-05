@@ -10,7 +10,7 @@ import com.example.tmdbmovie.data.local.dao.TvDao
 import com.example.tmdbmovie.data.local.entity.FavoriteMovieEntity
 import com.example.tmdbmovie.data.local.entity.FavoriteTvEntity
 
-@Database(entities = [FavoriteMovieEntity::class, FavoriteTvEntity::class], version = 1)
+@Database(entities = [FavoriteMovieEntity::class, FavoriteTvEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun movieDao(): MovieDao
     abstract fun tvDao(): TvDao

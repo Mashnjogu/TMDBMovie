@@ -1,8 +1,8 @@
 package com.example.tmdbmovie.presentation
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -11,14 +11,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.tmdbmovie.composables.*
-import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.ui.theme.SoftYellow
 
 
@@ -27,6 +26,7 @@ fun HomeScreen(
     navController: NavHostController,
     onNavigateToMovieDetails: (Int) -> Unit,
     onNavigateToShowDetails: (Int) -> Unit,
+    isDarkTheme: Boolean = isSystemInDarkTheme()
 ){
 
     val scaffoldState = rememberScaffoldState()
@@ -38,7 +38,11 @@ fun HomeScreen(
         topBar = {
                  TopAppBar(
                      title = {
-                         Text(text = "MovieOnline")
+                         Text(
+                             text = "MovieOnline",
+                             style = MaterialTheme.typography.h3,
+                             color = if (isDarkTheme) Color.White else Color.Black
+                         )
                      },
                      backgroundColor = MaterialTheme.colors.background,
                      navigationIcon = {
@@ -75,7 +79,8 @@ fun Home(
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
     onNavigateToMovieDetails: (Int) -> Unit,
-    onNavigateToShowDetails: (Int) -> Unit
+    onNavigateToShowDetails: (Int) -> Unit,
+    isDarkTheme: Boolean = isSystemInDarkTheme()
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -140,11 +145,15 @@ fun Home(
         Spacer(modifier = Modifier.height(12.dp))
 //        TMDBSearchBar(onSearch = {})
 //        Spacer(modifier = Modifier.height(12.dp))
-        Text(text = "Trending:", style = MaterialTheme.typography.h3)
+        Text(
+            text = "Trending Movies:",
+            style = MaterialTheme.typography.h3,
+            color = if (isDarkTheme) Color.White else Color.Black
+        )
         Spacer(modifier = Modifier.height(12.dp))
         if (trendingMovies != null) {
             if (movieGenres != null) {
-                EmptyCard2(trendingMovies = trendingMovies, allGenres = movieGenres)
+                TrendingMovieCard(trendingMovies = trendingMovies, onNavigateToMovieDetails = onNavigateToMovieDetails)
             }
         }else{
             EmptyCard()
@@ -152,7 +161,11 @@ fun Home(
         Spacer(modifier = Modifier.height(12.dp))
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(text = "Movies:", style = MaterialTheme.typography.h3)
+        Text(
+            text = "Movies:",
+            style = MaterialTheme.typography.h3,
+            color = if (isDarkTheme) Color.White else Color.Black
+        )
 
 
       ScrollableTabRow(
@@ -176,7 +189,12 @@ fun Home(
                             color = if (selected){
                                 SoftYellow
                             }else{
-                                MaterialTheme.colors.secondary
+                                if(isDarkTheme){
+                                    Color.White
+                                }else{
+                                    Color.Black
+                                }
+
                             }
 
                         )},
@@ -223,7 +241,11 @@ fun Home(
         }
 
         Spacer(modifier = Modifier.height(12.dp))
-        Text(text = "TV Shows:", style = MaterialTheme.typography.h3)
+        Text(
+            text = "TV Shows:",
+            style = MaterialTheme.typography.h3,
+            color = if (isDarkTheme) Color.White else Color.Black
+        )
 
         TabRow(
             selectedTabIndex = tabIndexShow,
@@ -246,7 +268,11 @@ fun Home(
                             color = if (selected){
                                 SoftYellow
                             }else{
-                                MaterialTheme.colors.secondary
+                                if(isDarkTheme){
+                                    Color.White
+                                }else{
+                                    Color.Black
+                                }
                             }
 
                         )},

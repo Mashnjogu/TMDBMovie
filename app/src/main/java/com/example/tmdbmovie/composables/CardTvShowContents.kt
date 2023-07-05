@@ -83,7 +83,7 @@ fun FilmShowImageCard(
                 .crossfade(true)
                 .build(),
             contentDescription = stringResource(id = R.string.filmPhoto),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
         )
     }
 }

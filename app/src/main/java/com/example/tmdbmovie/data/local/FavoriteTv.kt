@@ -1,7 +1,5 @@
 package com.example.tmdbmovie.data.local
 
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
 
 data class FavoriteTv(
     val id: Int,

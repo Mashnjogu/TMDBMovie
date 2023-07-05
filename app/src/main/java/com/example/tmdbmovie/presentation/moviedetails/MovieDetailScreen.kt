@@ -41,10 +41,13 @@ import com.example.tmdbmovie.R
 import com.example.tmdbmovie.composables.CastProfileCard
 import com.example.tmdbmovie.composables.GenreChip
 import com.example.tmdbmovie.composables.TabCardMovieContent
+import com.example.tmdbmovie.data.FavoriteMovie
 import com.example.tmdbmovie.data.model.genre.MovieGenreDTO
 import com.example.tmdbmovie.domain.model.Person
 import com.example.tmdbmovie.domain.util.BACKDROPPATHURL
 import com.example.tmdbmovie.extras.MovieDetailsUiState
+import com.example.tmdbmovie.presentation.FavoriteScreen.FavMovieViewModel
+import com.example.tmdbmovie.presentation.FavoriteScreen.FavTvViewModel
 
 private val headerHeight = 420.dp
 private val toolbarHeight = 56.dp
@@ -57,6 +60,7 @@ private const val titleFontScaleEnd = 0.66f
 @Composable
 fun MovieDetailScreen(
     modifier: Modifier = Modifier,
+    onNavigateToMovieDeatils: (Int) -> Unit,
 ) {
     val movieDetailViewModel = hiltViewModel<MovieDetailsViewModel>()
     val scroll: ScrollState = rememberScrollState(0)
@@ -68,7 +72,7 @@ fun MovieDetailScreen(
     }
     Box(modifier = modifier.fillMaxSize()){
         Header(headerHeightPx = headerHeightPx, scroll = scroll, viewModel = movieDetailViewModel)
-        Body(scrollState = scroll, viewModel = movieDetailViewModel)
+        Body(scrollState = scroll, viewModel = movieDetailViewModel, onNavigateToMovieDeatils = onNavigateToMovieDeatils)
         Toolbar(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx)
         Title(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx, viewModel = movieDetailViewModel)
     }
@@ -134,6 +138,7 @@ private fun Header(modifier: Modifier = Modifier, headerHeightPx: Float, scroll:
                 }
             }
             is MovieDetailsUiState.Error -> {}
+            else -> {}
         }
 
     }
@@ -144,6 +149,8 @@ fun Body(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
     viewModel: MovieDetailsViewModel,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onNavigateToMovieDeatils: (Int) -> Unit,
 ) {
 
     val uiState by viewModel.movieDetailsUiState.collectAsState()
@@ -151,6 +158,7 @@ fun Body(
     val movieDetailState = viewModel.movieDetail.collectAsState()
     val movieImage = movieDetailState.value?.backdrop_path
 
+    val favViewModel = hiltViewModel<FavMovieViewModel>()
 
     Column(
 //        horizontalAlignment = Alignment.CenterHorizontally,
@@ -191,33 +199,55 @@ fun Body(
 
                 val similarMovies = movieDetails.similar.results
 
-
-
                 Row(
                     modifier = modifier.padding(PaddingValues(horizontal = 8.dp)),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Column(){
                         Text(text = "Released on : ${movieDetails.release_date}",
-                            style = androidx.compose.material.MaterialTheme.typography.h5 )
+                            style = androidx.compose.material.MaterialTheme.typography.h5,
+                            color = if (isDarkTheme) Color.White else Color.Black
+                        )
                         Text(
                             text = "Rating: ${movieDetails.vote_average}",
-                            style = androidx.compose.material.MaterialTheme.typography.h5
+                            style = androidx.compose.material.MaterialTheme.typography.h5,
+                            color = if (isDarkTheme) Color.White else Color.Black
                         )
                     }
                     Spacer(modifier = Modifier.width(screenWidth * 0.25f))
                     Card(modifier = modifier
                         .height(80.dp)
-                        .width(85.dp)
+                        .width(90.dp)
 
                     ){
-                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "",
-                            modifier = modifier.padding(4.dp))
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "",
+                            modifier = modifier.padding(4.dp)
+                                .clickable {
+                                    favViewModel.addFaveMovie(
+                                        FavoriteMovie(
+                                            id = movieDetails.id,
+                                            backdropPath = movieDetails.backdrop_path,
+                                            releaseDate = movieDetails.release_date,
+                                            runtime = movieDetails.runtime,
+                                            title = movieDetails.title,
+                                            voteAverage = movieDetails.vote_average,
+                                            voteCount = movieDetails.vote_count,
+                                            date = System.currentTimeMillis()
+                                        )
+                                    )
+                                }
+                        )
                     }
 
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Genre:", style = androidx.compose.material.MaterialTheme.typography.h5)
+                Text(
+                    text = "Genre:",
+                    style = androidx.compose.material.MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow( horizontalArrangement = Arrangement.spacedBy(6.dp)){
@@ -228,12 +258,19 @@ fun Body(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Summary:",
                     style = androidx.compose.material.MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "${movieDetails.overview}",  style = androidx.compose.material
-                    .MaterialTheme.typography.h5)
+                    .MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
+                )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Cast:",  style = androidx.compose.material.MaterialTheme.typography.h5)
+                Text(
+                    text = "Cast:",
+                    style = androidx.compose.material.MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(15.dp)){
                     items(items = movieCast, key = {person -> person.id }){
@@ -241,13 +278,18 @@ fun Body(
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Trailers:",  style = androidx.compose.material.MaterialTheme.typography.h5)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Similar movies:",  style = androidx.compose.material.MaterialTheme.typography.h5)
-                TabCardMovieContent(images = similarMovies, onNavigateToMovieDeatils = {}, screenHeight = similarMoviesHeight)
+                Text(
+                    text = "Similar movies:",
+                    style = androidx.compose.material.MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                TabCardMovieContent(images = similarMovies, onNavigateToMovieDeatils = onNavigateToMovieDeatils, screenHeight = similarMoviesHeight)
                 Spacer(modifier = Modifier.height(12.dp))
             }
             is MovieDetailsUiState.Error -> {}
+            else -> {}
         }
 
     }

@@ -89,8 +89,8 @@ fun NavGraphBuilder.TMDBGraph(appState: TMDBAppState, navController: NavHostCont
     composable(BottomNavigationScreens.Home.route){
         HomeScreen(
             navController = navController,
-            onNavigateToMovieDetails = {
-            navController.navigate(Routes.MovieDetail.route)
+            onNavigateToMovieDetails = {movieId ->
+                navController.navigate("${Routes.MovieDetail.route}/$movieId")
         },
             onNavigateToShowDetails = {tvShowId ->
                 navController.navigate("${Routes.ShowDetail.route}/$tvShowId")
@@ -98,7 +98,7 @@ fun NavGraphBuilder.TMDBGraph(appState: TMDBAppState, navController: NavHostCont
         )
     }
     composable(BottomNavigationScreens.Search.route){
-        SearchScreen()
+        SearchScreen(navController = navController)
     }
     composable(BottomNavigationScreens.Favorite.route){
         FavoriteScreen()
@@ -112,7 +112,9 @@ fun NavGraphBuilder.TMDBGraph(appState: TMDBAppState, navController: NavHostCont
     ){
 //        val movieId = it.arguments?.getString(Routes.MovieDetail.Args.movieId)?.toInt()
 //            ?: throw IllegalStateException("Missing movieId argument")
-        MovieDetailScreen()
+        MovieDetailScreen(onNavigateToMovieDeatils = {movieId ->
+            navController.navigate("${Routes.MovieDetail.route}/$movieId")
+        })
     }
 
     composable(
@@ -121,7 +123,9 @@ fun NavGraphBuilder.TMDBGraph(appState: TMDBAppState, navController: NavHostCont
             navArgument(TV_SHOWDETAIL_ID_KEY){type = NavType.IntType}
         )
     ){
-        TvDetailScreen()
+        TvDetailScreen(onNavigateToShowDetails = {showId ->
+            navController.navigate("${Routes.ShowDetail.route}/$showId")
+        })
     }
 
 }

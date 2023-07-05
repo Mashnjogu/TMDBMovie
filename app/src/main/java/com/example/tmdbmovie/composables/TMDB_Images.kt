@@ -1,6 +1,7 @@
 package com.example.tmdbmovie.composables
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -34,7 +36,8 @@ import com.example.tmdbmovie.domain.util.dummyImage
 @Composable
 fun CastProfileCard(
     modifier: Modifier = Modifier,
-    personDetail: Person
+    personDetail: Person,
+    isDarkTheme: Boolean = isSystemInDarkTheme()
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -67,21 +70,25 @@ fun CastProfileCard(
                         .crossfade(true)
                         .build(),
                     contentDescription = stringResource(id = R.string.filmPhoto),
-                    contentScale = ContentScale.FillBounds
+                    contentScale = ContentScale.Crop
                 )
             }
             Spacer(modifier = modifier.height(4.dp))
-            personDetail.character?.let { Text(text = it) }
+            personDetail.character?.let { Text(
+                text = it,
+                color = if (isDarkTheme) Color.White else Color.Black
+            ) }
             Spacer(modifier = modifier.height(4.dp))
-            Text(text = personDetail.name)
+            Text(
+                text = personDetail.name,
+                color = if (isDarkTheme) Color.White else Color.Black
+            )
             Spacer(modifier = modifier.height(6.dp))
 
         }
 
 
         }
-
-
 
 }
 

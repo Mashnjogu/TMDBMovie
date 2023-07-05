@@ -8,6 +8,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,10 +64,13 @@ import com.example.tmdbmovie.R
 import com.example.tmdbmovie.composables.CastProfileCard
 import com.example.tmdbmovie.composables.GenreChip
 import com.example.tmdbmovie.composables.TabCardTvShowContent
+import com.example.tmdbmovie.data.FavoriteMovie
 import com.example.tmdbmovie.data.local.FavoriteTv
 import com.example.tmdbmovie.data.local.entity.FavoriteTvEntity
+import com.example.tmdbmovie.data.model.tvshows.Created_Data
 import com.example.tmdbmovie.domain.model.Person
 import com.example.tmdbmovie.domain.util.BACKDROPPATHURL
+import com.example.tmdbmovie.domain.util.POSTERPATHURL
 import com.example.tmdbmovie.extras.TvShowDetailsUiState
 import com.example.tmdbmovie.presentation.FavoriteScreen.FavTvViewModel
 
@@ -80,6 +85,7 @@ private const val titleFontScaleEnd = 0.66f
 @Composable
 fun TvDetailScreen(
     modifier: Modifier = Modifier,
+    onNavigateToShowDetails: (Int) -> Unit,
 ){
     val tvShowDetailViewModel = hiltViewModel<TvDetailsViewModel>()
     val scroll: ScrollState = rememberScrollState(0)
@@ -91,7 +97,7 @@ fun TvDetailScreen(
     }
     Box(modifier = modifier.fillMaxSize()){
         Header(headerHeightPx = headerHeightPx, scroll = scroll, viewModel = tvShowDetailViewModel)
-        Body(scrollState = scroll, viewModel = tvShowDetailViewModel)
+        Body(scrollState = scroll, viewModel = tvShowDetailViewModel, onNavigateToShowDetails = onNavigateToShowDetails)
         Toolbar(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx)
         Title(scroll = scroll, headerHeightPx = headerHeightPx, toolbarHeightPx = toolbarHeightPx,viewModel = tvShowDetailViewModel)
     }
@@ -127,6 +133,7 @@ private fun Header(modifier: Modifier = Modifier, headerHeightPx: Float, scroll:
             }
             is TvShowDetailsUiState.Success -> {
                 val showImage = currentState.showDetails.backdrop_path
+                val showPoster = currentState.showDetails.posterPath
 
                 Log.d("DetailScreen=>", "The movie image is $showImage and the movie name is ${currentState.showDetails.name}")
 
@@ -141,7 +148,14 @@ private fun Header(modifier: Modifier = Modifier, headerHeightPx: Float, scroll:
                         error = painterResource(id = R.drawable.ic_broken_image),
                         placeholder = painterResource(id = R.drawable.loading_img),
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data("$BACKDROPPATHURL${showImage}")
+                            .data(
+                                if (BACKDROPPATHURL.isEmpty()){
+                                    "$BACKDROPPATHURL${showImage}"
+                                }else{
+                                    "$POSTERPATHURL${showPoster}"
+                                }
+
+                            )
                             .crossfade(true)
                             .build(),
                         contentDescription = stringResource(id = R.string.filmPhoto),
@@ -162,6 +176,7 @@ private fun Header(modifier: Modifier = Modifier, headerHeightPx: Float, scroll:
                 }
             }
             is TvShowDetailsUiState.Error -> {}
+            else -> {}
         }
     }
 }
@@ -171,6 +186,8 @@ fun Body(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
     viewModel: TvDetailsViewModel,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onNavigateToShowDetails: (Int) -> Unit,
 ) {
 
     val uiState by viewModel.tvDetailsUiState.collectAsState()
@@ -212,6 +229,10 @@ fun Body(
                     )
                 }
 
+                val directorNames = showDetails.created_by.map {
+                    it.name
+                }
+
                 val similarShows = showDetails.similar.results
 
                 Row(
@@ -220,58 +241,89 @@ fun Body(
                 ){
                     Column(){
                         Text(text = "Released on : ${showDetails.firstAirDate}",
-                            style = MaterialTheme.typography.h5 )
+                            style = MaterialTheme.typography.h5,
+                            color = if (isDarkTheme) Color.White else Color.Black
+                        )
                         Text(
                             text = "Rating: ${showDetails.vote_average}",
-                            style = MaterialTheme.typography.h5
+                            style = MaterialTheme.typography.h5,
+                            color = if (isDarkTheme) Color.White else Color.Black
                         )
                     }
                     Spacer(modifier = Modifier.width(screenWidth * 0.25f))
                     Card(modifier = modifier
                         .height(80.dp)
-                        .width(85.dp)
+                        .width(90.dp)
 
                     ){
-                        IconButton(onClick = {
-//                            favViewModel.addFaveTvShow(
-//                                FavoriteTv(
-//                                    id = showDetails.id,
-//                                    numOfSeasons = showDetails.num_of_seasons,
-//                                    firstAirDate = showDetails.firstAirDate,
-//                                    name = showDetails.name,
-//                                    backdropPath = showDetails.backdrop_path,
-//                                    voteAverage = showDetails.vote_average,
-//                                    voteCount = showDetails.vote_count,
-//                                    date = System.currentTimeMillis()
-//                                )
-//                            )
-                        }) {
-                            Icon(imageVector = Icons.Default.Favorite, contentDescription = "",
-                                modifier = modifier
-                                    .padding(4.dp)
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "",
+                            modifier = modifier.padding(4.dp)
+                                .clickable {
+                                    favViewModel.addFaveTvShow(
+                                        FavoriteTv(
+                                            id = showDetails.id,
+                                            numOfSeasons = showDetails.num_of_seasons,
+                                            firstAirDate = showDetails.firstAirDate,
+                                            name = showDetails.name,
+                                            backdropPath = showDetails.backdrop_path,
+                                            voteAverage = showDetails.vote_average,
+                                            voteCount = showDetails.vote_count,
+                                            date = System.currentTimeMillis()
+                                        )
+                                    )
+                                }
+                        )
 
                     }
 
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
-                    Text(text = "No of Seasons:", style = androidx.compose.material.MaterialTheme.typography.h5)
-                    Text(text = "${showDetails.num_of_seasons}", style = androidx.compose.material.MaterialTheme.typography.h5)
+                    Text(
+                        text = "No of Seasons: ",
+                        style = androidx.compose.material.MaterialTheme.typography.h5,
+                        color = if (isDarkTheme) Color.White else Color.Black
+                        )
+                    Text(
+                        text = "${showDetails.num_of_seasons}",
+                        style = androidx.compose.material.MaterialTheme.typography.h5,
+                        color = if (isDarkTheme) Color.White else Color.Black
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
-                    Text(text = "No of episodes:", style = androidx.compose.material.MaterialTheme.typography.h5)
-                    Text(text = "${showDetails.num_of_episodes}", style = androidx.compose.material.MaterialTheme.typography.h5)
+                    Text(
+                        text = "No of episodes: ",
+                        style = androidx.compose.material.MaterialTheme.typography.h5,
+                        color = if (isDarkTheme) Color.White else Color.Black
+                    )
+                    Text(
+                        text = "${showDetails.num_of_episodes}",
+                        style = androidx.compose.material.MaterialTheme.typography.h5,
+                        color = if (isDarkTheme) Color.White else Color.Black
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
-                    Text(text = "Created By: ", style = androidx.compose.material.MaterialTheme.typography.h5)
-                    Text(text = "${showDetails.created_by}", style = androidx.compose.material.MaterialTheme.typography.h5)
+                    Text(
+                        text = "Created By: ",
+                        style = androidx.compose.material.MaterialTheme.typography.h5,
+                        color = if (isDarkTheme) Color.White else Color.Black
+                    )
+                    Text(
+                        text = directorNames.joinToString(", "),
+                        style = androidx.compose.material.MaterialTheme.typography.h5,
+                        color = if (isDarkTheme) Color.White else Color.Black
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Genre:", style = androidx.compose.material.MaterialTheme.typography.h5)
+                Text(
+                    text = "Genre: ",
+                    style = androidx.compose.material.MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow( horizontalArrangement = Arrangement.spacedBy(6.dp)){
@@ -282,17 +334,32 @@ fun Body(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Summary:",
                     style = androidx.compose.material.MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "${showDetails.overview}",  style = androidx.compose.material
-                    .MaterialTheme.typography.h5)
+                    .MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
-                    Text(text = "Still in Production:", style = androidx.compose.material.MaterialTheme.typography.h5)
-                    Text(text = "${showDetails.in_production}", style = androidx.compose.material.MaterialTheme.typography.h5)
+                    Text(
+                        text = "Still in Production: ",
+                        style = androidx.compose.material.MaterialTheme.typography.h5,
+                        color = if (isDarkTheme) Color.White else Color.Black
+                    )
+                    Text(
+                        text = "${showDetails.in_production}",
+                        style = androidx.compose.material.MaterialTheme.typography.h5,
+                        color = if (isDarkTheme) Color.White else Color.Black
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Cast:",  style = androidx.compose.material.MaterialTheme.typography.h5)
+                Text(
+                    text = "Cast:",
+                    style = androidx.compose.material.MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(15.dp)){
                     items(items = showCast, key = {person -> person.id }){
@@ -302,12 +369,16 @@ fun Body(
                 Spacer(modifier = Modifier.height(8.dp))
                 Spacer(modifier = Modifier.height(8.dp))
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Similar shows:",  style = androidx.compose.material.MaterialTheme.typography.h5)
-                Text("Grid of 3")
-                TabCardTvShowContent(images = similarShows, onNavigateToTvShowDetails = {}, screenHeight = similarMoviesHeight)
+                Text(
+                    text = "Similar shows:",
+                    style = androidx.compose.material.MaterialTheme.typography.h5,
+                    color = if (isDarkTheme) Color.White else Color.Black
+                )
+                TabCardTvShowContent(images = similarShows, onNavigateToTvShowDetails = onNavigateToShowDetails, screenHeight = similarMoviesHeight)
                 Spacer(modifier = Modifier.height(12.dp))
             }
             is TvShowDetailsUiState.Error -> {}
+            else -> {}
         }
 
     }

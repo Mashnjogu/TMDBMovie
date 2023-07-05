@@ -50,7 +50,7 @@ class MovieDetailsViewModel @Inject constructor(
                  repository.getMovieDetails(movieId)
                      .flowOn(Dispatchers.IO)
                      .collect{movieDetails ->
-                         println("The movieDetails aree: $movieDetails")
+                         println("The movieDetails are: $movieDetails")
                          _movieDetailsUiState.value = MovieDetailsUiState.Success(movieDetails)
                      }
              }catch(e: Exception){

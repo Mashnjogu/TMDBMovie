@@ -2,6 +2,7 @@ package com.example.tmdbmovie.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -24,7 +25,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.tmdbmovie.data.model.movies.MovieDataDTO
 import com.example.tmdbmovie.R
-import com.example.tmdbmovie.data.model.genre.Genre
 import com.example.tmdbmovie.domain.util.POSTERPATHURL
 
 @Composable
@@ -88,10 +88,11 @@ fun FilmImageCard(
                 .crossfade(true)
                 .build(),
             contentDescription = stringResource(id = R.string.filmPhoto),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
         )
     }
 }
+
 
 @Composable
 fun EmptyCard(modifier: Modifier = Modifier){
@@ -114,30 +115,40 @@ fun EmptyCard(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun EmptyCard2(
+fun TrendingMovieCard(
     modifier: Modifier = Modifier,
     trendingMovies: List<MovieDataDTO>,
-    allGenres: List<Genre>
+    onNavigateToMovieDetails: (Int) -> Unit
 ){
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
+
+    val movieId = trendingMovies
     Card(
         modifier =
         modifier
             .fillMaxWidth()
             .height(screenHeight * 0.45f),
     ) {
-        ScrollEffectChange(trendingMovies = trendingMovies, allGenres = allGenres)
+        ScrollEffectChange(trendingMovies = trendingMovies){movieId ->
+            onNavigateToMovieDetails(movieId)
+        }
     }
 }
 
 @Composable
-fun GenreChip(name: String){
+fun GenreChip(
+    name: String,
+    isDarkTheme: Boolean = isSystemInDarkTheme()
+){
     Card(
         shape = RoundedCornerShape(10.dp),
 
     ){
-        Text(text = name, style = MaterialTheme.typography.h5, modifier = Modifier.padding(6.dp))
+        Text(
+            text = name, style = MaterialTheme.typography.h5, modifier = Modifier.padding(6.dp),
+            color = if (isDarkTheme) Color.White else Color.Black
+        )
     }
 }
 

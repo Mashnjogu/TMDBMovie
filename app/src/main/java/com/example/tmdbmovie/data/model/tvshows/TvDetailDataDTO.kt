@@ -20,16 +20,18 @@ data class TvDetailDataDTO(
     val last_episode_to_air: LastEpisodeToAir,
     @SerializedName("name")
     val name: String,
-    @SerializedName("next_episode_to_air")
-    val next_episode_to_air: Boolean?,
-    @SerializedName("num_of_episodes")
+//    @SerializedName("next_episode_to_air")
+//    val next_episode_to_air: Boolean?,
+    @SerializedName("number_of_episodes")
     val num_of_episodes: Int,
-    @SerializedName("num_of_seasons")
+    @SerializedName("number_of_seasons")
     val num_of_seasons: Int,
     @SerializedName("overview")
     val overview: String,
     @SerializedName("backdrop_path")
     val backdrop_path: String?,
+    @SerializedName("poster_path")
+    val posterPath: String?,
     @SerializedName("tagline")
     val tagline: String,
     @SerializedName("vote_average")

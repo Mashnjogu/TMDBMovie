@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TvDao {
     @Query("SELECT * FROM favoritetventity ORDER BY date_added DESC")
-    suspend fun getAllTvShows(): Flow<List<FavoriteTvEntity>>
+     fun getAllTvShows(): Flow<List<FavoriteTvEntity>>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTvShow(tvEntity: FavoriteTvEntity)
     @Delete

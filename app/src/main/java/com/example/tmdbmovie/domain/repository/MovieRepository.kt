@@ -1,5 +1,6 @@
 package com.example.tmdbmovie.domain.repository
 
+import com.example.tmdbmovie.data.FavoriteMovie
 import com.example.tmdbmovie.data.local.FavoriteTv
 import com.example.tmdbmovie.data.local.entity.FavoriteTvEntity
 import com.example.tmdbmovie.data.model.genre.MovieGenre
@@ -44,4 +45,12 @@ interface MovieRepository {
     suspend fun addFavTvShow(tvShow: FavoriteTv)
 
     suspend fun deleteFavTvShow(tvShow: FavoriteTv)
+
+    suspend fun getFavMovies(): Flow<List<FavoriteMovie>>
+
+    suspend fun addFavMovie(movie: FavoriteMovie)
+
+    suspend fun deleteFavMovie(movie: FavoriteMovie)
+
+
 }

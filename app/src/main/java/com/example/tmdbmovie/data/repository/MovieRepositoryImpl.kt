@@ -1,6 +1,8 @@
 package com.example.tmdbmovie.data.repository
 
+import com.example.tmdbmovie.data.FavoriteMovie
 import com.example.tmdbmovie.data.local.FavoriteTv
+import com.example.tmdbmovie.data.local.dao.MovieDao
 import com.example.tmdbmovie.data.local.dao.TvDao
 
 import com.example.tmdbmovie.data.model.genre.MovieGenre
@@ -20,6 +22,7 @@ import javax.inject.Inject
 class MovieRepositoryImpl @Inject constructor(
     private val moviesApiHelper: MovieApiHelper,
     private val tvDao: TvDao,
+    private val movieDao: MovieDao
 ): MovieRepository{
     override suspend fun getPopularMovies(): Flow<MoviesDTO> {
         return moviesApiHelper.getPopularMovies()
@@ -77,6 +80,7 @@ class MovieRepositoryImpl @Inject constructor(
                 it.toFavoriteTv()
             }
         }
+
     }
 
     override suspend fun addFavTvShow(tvShow: FavoriteTv) {
@@ -87,5 +91,20 @@ class MovieRepositoryImpl @Inject constructor(
         return tvDao.deleteTvShow(tvShow.toFavoriteTvEntity())
     }
 
+    override suspend fun getFavMovies(): Flow<List<FavoriteMovie>> {
+        return movieDao.getAllMovies().map {
+            it.map {
+                it.toFavoriteMovie()
+            }
+        }
+    }
+
+    override suspend fun addFavMovie(movie: FavoriteMovie) {
+        return movieDao.insertMovie(movie.toFavoriteMovieEntity())
+    }
+
+    override suspend fun deleteFavMovie(movie: FavoriteMovie) {
+        return movieDao.deleteMovie(movie.toFavoriteMovieEntity())
+    }
 
 }
